@@ -1,0 +1,581 @@
+@extends('layouts.app')
+
+@section('title', 'Gestión de Campañas')
+
+@section('content')
+<div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8">
+    <div class="container mx-auto px-4 max-w-7xl">
+        <!-- Header con estadísticas -->
+        <div class="mb-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Gestión de Campañas</h1>
+                    <p class="text-gray-600">Administra y supervisa todas las campañas de marketing</p>
+                </div>
+                <div class="flex items-center space-x-4 mt-4 lg:mt-0">
+                    <div class="bg-white rounded-xl px-4 py-2 shadow-sm border">
+                        <span class="text-sm text-gray-500">Total Activas</span>
+                        <div class="text-2xl font-bold text-blue-600">{{ $campaniasActivas->count() }}</div>
+                    </div>
+                    <div class="bg-white rounded-xl px-4 py-2 shadow-sm border">
+                        <span class="text-sm text-gray-500">Sin Campaña</span>
+                        <div class="text-2xl font-bold text-orange-600">{{ $clientesSinCampania->count() }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de clientes sin campaña -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mr-4">
+                    <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Clientes sin Campaña Activa</h2>
+                    <p class="text-gray-600">Clientes que necesitan una nueva campaña de marketing</p>
+                </div>
+            </div>
+            
+            @if($clientesSinCampania->isEmpty())
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-500 text-lg">¡Excelente! Todos los clientes tienen campañas activas</p>
+                </div>
+            @else
+                <div class="overflow-hidden rounded-xl border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cliente</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Plan</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fin Suscripción</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($clientesSinCampania as $cliente)
+                                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                                {{ substr($cliente['nombre'], 0, 1) }}
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-semibold text-gray-900">{{ $cliente['nombre'] }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $cliente['email'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {{ $cliente['plan'] }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $cliente['fecha_fin_suscripcion'] }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button onclick="mostrarFormulario('{{ $cliente['id'] }}')" 
+                                                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                            </svg>
+                                            Crear Campaña
+                                        </button>
+                                    </td>
+                                </tr>
+                                
+                                <!-- Formulario mejorado -->
+                                <tr id="form-{{ $cliente['id'] }}" class="hidden bg-gradient-to-r from-blue-50 to-indigo-50">
+                                    <td colspan="5" class="px-6 py-8">
+                                        <div class="bg-white rounded-xl p-6 shadow-sm border border-blue-100">
+                                            <div class="flex items-center mb-6">
+                                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                </div>
+                                                <h3 class="text-lg font-semibold text-gray-900">Nueva Campaña para {{ $cliente['nombre'] }}</h3>
+                                            </div>
+                                            
+                                            <form action="{{ route('administrador.campañas.guardar') }}" method="POST" class="space-y-6">
+                                                @csrf
+                                                <input type="hidden" name="usuario_cliente_id" value="{{ $cliente['id'] }}">
+                                                
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <!-- Admin -->
+                                                    <div class="space-y-2">
+                                                        <label class="block text-sm font-semibold text-gray-700">Administrador</label>
+                                                        <div class="relative">
+                                                            <input type="text" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-600" 
+                                                                   value="{{ $adminActual->name }}" readonly>
+                                                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Community Manager -->
+                                                    <div class="space-y-2">
+                                                        <label for="cm-{{ $cliente['id'] }}" class="block text-sm font-semibold text-gray-700">
+                                                            Community Manager <span class="text-red-500">*</span>
+                                                        </label>
+                                                        <select name="community_manager_id" id="cm-{{ $cliente['id'] }}" 
+                                                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" required>
+                                                            <option value="">Seleccione un Community Manager</option>
+                                                            @foreach($communityManagers as $cm)
+                                                                <option value="{{ $cm->id }}">{{ $cm->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <!-- Nombre -->
+                                                    <div class="space-y-2">
+                                                        <label for="nombre-{{ $cliente['id'] }}" class="block text-sm font-semibold text-gray-700">
+                                                            Nombre de la Campaña <span class="text-red-500">*</span>
+                                                        </label>
+                                                        <input type="text" name="nombre" id="nombre-{{ $cliente['id'] }}" 
+                                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                                                               required placeholder="Ej: Campaña Q2 2025">
+                                                    </div>
+                                                    
+                                                    <!-- Descripción -->
+                                                    <div class="md:col-span-2 space-y-2">
+                                                        <label for="descripcion-{{ $cliente['id'] }}" class="block text-sm font-semibold text-gray-700">
+                                                            Descripción y Objetivos <span class="text-red-500">*</span>
+                                                        </label>
+                                                        <textarea name="descripcion" id="descripcion-{{ $cliente['id'] }}" rows="4"
+                                                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none" 
+                                                                  required placeholder="Describe los objetivos principales, público objetivo y estrategias clave de la campaña..."></textarea>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                                                    <button type="button" onclick="ocultarFormulario('{{ $cliente['id'] }}')" 
+                                                            class="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors">
+                                                        Cancelar
+                                                    </button>
+                                                    <button type="submit" 
+                                                            class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
+                                                        Crear Campaña
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+        
+        <!-- Sección de campañas activas -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mr-4">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Campañas Activas</h2>
+                    <p class="text-gray-600">Campañas en ejecución y desarrollo</p>
+                </div>
+            </div>
+            
+            @if($campaniasActivas->isEmpty())
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h2m0-13h10a2 2 0 012 2v11a2 2 0 01-2 2H9m0-13v13"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-500 text-lg">No hay campañas activas en este momento</p>
+                </div>
+            @else
+                <div class="overflow-hidden rounded-xl border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Campaña</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cliente</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Community Manager</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha Fin</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($campaniasActivas as $campania)
+                                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center text-white font-semibold">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-semibold text-gray-900">{{ $campania->nombre }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $campania->cliente->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $campania->communityManager->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+                                            {{ $campania->estado == 'activa' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                            <div class="w-2 h-2 rounded-full mr-2 
+                                                {{ $campania->estado == 'activa' ? 'bg-green-400' : 'bg-yellow-400' }}"></div>
+                                            {{ ucfirst($campania->estado) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        {{ \Carbon\Carbon::parse($campania->fecha_fin)->format('d/m/Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('administrador.campañas.show', $campania->id) }}" 
+                                               class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                                Ver
+                                            </a>
+                                                   <!-- Botón Editar Campaña -->
+                                        <a href="{{ route('administrador.campañas.edit', $campania->id) }}" 
+                                           class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-sm">
+                                            Editar
+                                        </a>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+        
+        <!-- Sección de campañas finalizadas -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <div class="flex items-center mb-6">
+                <div class="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center mr-4">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Campañas Finalizadas</h2>
+                    <p class="text-gray-600">Historial de campañas completadas</p>
+                </div>
+            </div>
+            
+            @if($campaniasFinalizadas->isEmpty())
+                <div class="text-center py-12">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h2m0-13h10a2 2 0 012 2v11a2 2 0 01-2 2H9m0-13v13"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-500 text-lg">No hay campañas finalizadas</p>
+                </div>
+            @else
+                <div class="overflow-hidden rounded-xl border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Campaña</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cliente</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Community Manager</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fecha Fin</th>
+                                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($campaniasFinalizadas as $campania)
+                                <tr class="{{ $loop->even ? 'bg-gray-50' : 'bg-white' }} hover:bg-gray-100 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="w-10 h-10 bg-gradient-to-r from-gray-400 to-gray-500 rounded-lg flex items-center justify-center text-white font-semibold">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-semibold text-gray-900">{{ $campania->nombre }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $campania->cliente->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $campania->communityManager->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <div class="w-2 h-2 rounded-full mr-2 bg-gray-400"></div>
+                                            {{ ucfirst($campania->estado) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        {{ \Carbon\Carbon::parse($campania->fecha_fin)->format('d/m/Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('administrador.campañas.show', $campania->id) }}" 
+                                               class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white text-xs font-medium rounded-lg hover:bg-blue-600 transition-colors">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                                Ver
+                                            </a>
+                                            
+                                            @if($campania->cliente->suscripciones()->where('estado', 'activa')->exists())
+                                                <form action="{{ route('administrador.campañas.activar', $campania->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" 
+                                                            class="inline-flex items-center px-3 py-1.5 bg-emerald-500 text-white text-xs font-medium rounded-lg hover:bg-emerald-600 transition-colors">
+                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                                        </svg>
+                                                        Reactivar
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
+    </div>
+</div>
+
+<!-- Scripts mejorados -->
+<script>
+    // Función para mostrar formulario con animación suave
+    function mostrarFormulario(clienteId) {
+        const form = document.getElementById('form-' + clienteId);
+        form.classList.remove('hidden');
+        
+        // Animación suave
+        setTimeout(() => {
+            form.style.opacity = '0';
+            form.style.transform = 'translateY(-10px)';
+            form.style.transition = 'all 0.3s ease-in-out';
+            
+            requestAnimationFrame(() => {
+                form.style.opacity = '1';
+                form.style.transform = 'translateY(0)';
+            });
+        }, 10);
+        
+        // Focus en el primer campo
+        const firstInput = form.querySelector('select, input[type="text"]');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 300);
+        }
+    }
+    
+    // Función para ocultar formulario con animación suave
+    function ocultarFormulario(clienteId) {
+        const form = document.getElementById('form-' + clienteId);
+        
+        form.style.opacity = '1';
+        form.style.transform = 'translateY(0)';
+        form.style.transition = 'all 0.3s ease-in-out';
+        
+        requestAnimationFrame(() => {
+            form.style.opacity = '0';
+            form.style.transform = 'translateY(-10px)';
+        });
+        
+        setTimeout(() => {
+            form.classList.add('hidden');
+            form.style.opacity = '';
+            form.style.transform = '';
+            form.style.transition = '';
+        }, 300);
+    }
+    
+    // Mejorar experiencia de usuario con efectos hover
+    document.addEventListener('DOMContentLoaded', function() {
+        // Añadir efecto de hover a las tarjetas principales
+        const cards = document.querySelectorAll('.bg-white.rounded-2xl');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.transition = 'transform 0.2s ease-in-out';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Validación en tiempo real para formularios
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        this.classList.add('border-red-300', 'focus:ring-red-500', 'focus:border-red-500');
+                        this.classList.remove('border-gray-300', 'focus:ring-blue-500', 'focus:border-blue-500');
+                    } else {
+                        this.classList.remove('border-red-300', 'focus:ring-red-500', 'focus:border-red-500');
+                        this.classList.add('border-gray-300', 'focus:ring-blue-500', 'focus:border-blue-500');
+                    }
+                });
+            });
+        });
+        
+        // Efecto de carga para botones de envío
+        const submitButtons = document.querySelectorAll('button[type="submit"]');
+        submitButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const form = this.closest('form');
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                    }
+                });
+                
+                if (isValid) {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = `
+                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Procesando...
+                    `;
+                    this.disabled = true;
+                    
+                    // Restaurar después de 5 segundos si no se envía
+                    setTimeout(() => {
+                        if (!form.submitted) {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                        }
+                    }, 5000);
+                }
+            });
+        });
+    });
+    
+    // Función para confirmar reactivación de campañas
+    document.addEventListener('DOMContentLoaded', function() {
+        const reactivateButtons = document.querySelectorAll('button[type="submit"]:contains("Reactivar")');
+        reactivateButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (confirm('¿Está seguro de que desea reactivar esta campaña? Esto la moverá de nuevo a campañas activas.')) {
+                    this.closest('form').submit();
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Estilos adicionales para mejorar la experiencia -->
+<style>
+    /* Animación para las estadísticas del header */
+    @keyframes countUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .bg-white:hover {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Mejoras en la tipografía */
+    .text-3xl {
+        letter-spacing: -0.025em;
+    }
+    
+    /* Efectos de hover mejorados para botones */
+    .hover\:shadow-md:hover {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* Indicadores de estado más llamativos */
+    .bg-green-100 {
+        background-color: #dcfce7;
+    }
+    
+    .text-green-800 {
+        color: #166534;
+    }
+    
+    .bg-yellow-100 {
+        background-color: #fef3c7;
+    }
+    
+    .text-yellow-800 {
+        color: #92400e;
+    }
+    
+    .bg-gray-100 {
+        background-color: #f3f4f6;
+    }
+    
+    .text-gray-800 {
+        color: #1f2937;
+    }
+    
+    /* Efectos de transición suaves */
+    .transition-all {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+    }
+    
+    /* Mejoras en formularios */
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Responsividad mejorada */
+    @media (max-width: 640px) {
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .bg-white.rounded-2xl {
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+        
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+    }
+</style>
+@endsection

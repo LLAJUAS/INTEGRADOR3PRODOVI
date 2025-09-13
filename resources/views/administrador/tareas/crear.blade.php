@@ -1,0 +1,132 @@
+@extends('layouts.app')
+
+@section('title', 'Crear Nueva Tarea')
+
+@section('content')
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-2xl font-semibold mb-6">Crear Nueva Tarea para: {{ $campania->nombre }}</h1>
+
+        <form action="{{ route('administrador.tareas.store', $campania->id) }}" method="POST">
+            @csrf
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="col-span-1">
+                    <label for="titulo" class="block text-sm font-medium text-gray-700 mb-1">Título *</label>
+                    <input type="text" name="titulo" id="titulo" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="prioridad" class="block text-sm font-medium text-gray-700 mb-1">Prioridad *</label>
+                    <select name="prioridad" id="prioridad" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <option value="media">Media</option>
+                        <option value="baja">Baja</option>
+                        <option value="alta">Alta</option>
+                        <option value="urgente">Urgente</option>
+                    </select>
+                </div>
+
+                <div class="col-span-1">
+                    <label for="fecha_inicio" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Inicio *</label>
+                    <input type="date" name="fecha_inicio" id="fecha_inicio" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        min="{{ \Carbon\Carbon::parse($campania->fecha_inicio)->format('Y-m-d') }}"
+                        max="{{ \Carbon\Carbon::parse($campania->fecha_fin)->format('Y-m-d') }}">
+                </div>
+
+                <div class="col-span-1">
+                    <label for="fecha_limite" class="block text-sm font-medium text-gray-700 mb-1">Fecha Límite *</label>
+                    <input type="date" name="fecha_limite" id="fecha_limite" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        min="{{ \Carbon\Carbon::parse($campania->fecha_inicio)->format('Y-m-d') }}"
+                        max="{{ \Carbon\Carbon::parse($campania->fecha_fin)->format('Y-m-d') }}">
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Filtrar usuarios</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label for="filtro_rol" class="block text-xs font-medium text-gray-500 mb-1">Por rol</label>
+                            <select id="filtro_rol" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Todos los roles</option>
+                                <option value="Administrador">Administrador</option>
+                                <option value="community_manager">Community Manager</option>
+                                <option value="diseñador">Diseñador</option>
+                                <option value="productor">Productor</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="filtro_nombre" class="block text-xs font-medium text-gray-500 mb-1">Por nombre</label>
+                            <input type="text" id="filtro_nombre" placeholder="Buscar por nombre..."
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <label for="asignado_id" class="block text-sm font-medium text-gray-700 mb-1">Asignar a *</label>
+                    <select name="asignado_id" id="asignado_id" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        @foreach($asignables as $user)
+                            <option value="{{ $user->id }}" data-rol="{{ $user->roles->first()->nombre_rol ?? 'Sin rol' }}">
+                                {{ $user->name }} ({{ $user->roles->first()->nombre_rol ?? 'Sin rol' }})
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-span-1 md:col-span-2">
+                    <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">Descripción *</label>
+                    <textarea name="descripcion" id="descripcion" rows="4" required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-4">
+                <a href="{{ route('administrador.campañas.show', $campania->id) }}"
+                    class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">
+                    Cancelar
+                </a>
+                <button type="submit"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Crear Tarea
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filtroRol = document.getElementById('filtro_rol');
+    const filtroNombre = document.getElementById('filtro_nombre');
+    const selectAsignado = document.getElementById('asignado_id');
+    const options = Array.from(selectAsignado.options);
+    
+    function filtrarUsuarios() {
+        const rolSeleccionado = filtroRol.value.toLowerCase();
+        const nombreBusqueda = filtroNombre.value.toLowerCase();
+        
+        options.forEach(option => {
+            const rol = option.getAttribute('data-rol').toLowerCase();
+            const nombre = option.text.toLowerCase();
+            
+            const coincideRol = rolSeleccionado === '' || rol.includes(rolSeleccionado);
+            const coincideNombre = nombre.includes(nombreBusqueda);
+            
+            option.style.display = (coincideRol && coincideNombre) ? '' : 'none';
+        });
+        
+        // Seleccionar la primera opción visible
+        const visibleOptions = Array.from(selectAsignado.options).filter(opt => opt.style.display !== 'none');
+        if (visibleOptions.length > 0) {
+            selectAsignado.value = visibleOptions[0].value;
+        }
+    }
+    
+    filtroRol.addEventListener('change', filtrarUsuarios);
+    filtroNombre.addEventListener('input', filtrarUsuarios);
+});
+</script>
+@endsection
