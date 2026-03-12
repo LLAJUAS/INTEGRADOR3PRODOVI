@@ -16,12 +16,12 @@
                 Usuarios Eliminados
             </a>
 
-            <button id="add-user-btn" class="btn-primary text-white px-6 py-3 rounded-xl flex items-center font-semibold">
+             <a href="{{ route('administrador.usuarios.create') }}" class="btn-primary text-white px-6 py-3 rounded-xl flex items-center font-semibold">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
                 Agregar Usuario
-            </button>
+            </a>
         </div>
     </div>
 </div>

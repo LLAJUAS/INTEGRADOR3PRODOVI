@@ -5,10 +5,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tarea;
+use App\Services\OllamaImageService; // <-- IMPORTAR EL NUEVO SERVICIO
 use Illuminate\Http\Request;
 
 class PublicacionController extends Controller
 {
+    // Inyectamos el servicio para usarlo
+    protected $ollamaImageService;
+
+    public function __construct(OllamaImageService $ollamaImageService)
+    {
+        $this->ollamaImageService = $ollamaImageService;
+    }
+
     public function index(Request $request)
     {
         // Obtener el ID de la tarea desde la URL (si viene de vertareassubidas.blade.php)
@@ -25,5 +34,22 @@ class PublicacionController extends Controller
         }])->findOrFail($tareaId);
         
         return view('administrador.publicacion.publicar', compact('tarea'));
+    }
+
+    /**
+     * Genera un copy publicitario usando IA basado en la imagen de la tarea.
+     */
+    public function generateCopy(Request $request)
+    {
+        $request->validate([
+            'tarea_id' => 'required|integer|exists:tareas,id',
+        ]);
+
+        $copy = $this->ollamaImageService->generateCopyFromImage($request->tarea_id);
+
+        return response()->json([
+            'success' => true,
+            'copy' => $copy
+        ]);
     }
 }

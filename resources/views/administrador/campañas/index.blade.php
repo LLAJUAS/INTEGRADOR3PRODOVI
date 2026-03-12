@@ -104,8 +104,12 @@
                                                 <h3 class="text-lg font-semibold text-gray-900">Nueva Campaña para {{ $cliente['nombre'] }}</h3>
                                             </div>
                                             
-                                            <form action="{{ route('administrador.campañas.guardar') }}" method="POST" class="space-y-6">
-                                                @csrf
+                                            <form id="crear-campania-form-{{ $cliente['id'] }}" 
+      action="{{ route('administrador.campañas.guardar') }}" 
+      method="POST" 
+      class="space-y-6"
+      onsubmit="return validarFormulario({{ $cliente['id'] }})">
+    @csrf
                                                 <input type="hidden" name="usuario_cliente_id" value="{{ $cliente['id'] }}">
                                                 
                                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -448,42 +452,6 @@
                 });
             });
         });
-        
-        // Efecto de carga para botones de envío
-        const submitButtons = document.querySelectorAll('button[type="submit"]');
-        submitButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                const form = this.closest('form');
-                const requiredFields = form.querySelectorAll('[required]');
-                let isValid = true;
-                
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        isValid = false;
-                    }
-                });
-                
-                if (isValid) {
-                    const originalText = this.innerHTML;
-                    this.innerHTML = `
-                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Procesando...
-                    `;
-                    this.disabled = true;
-                    
-                    // Restaurar después de 5 segundos si no se envía
-                    setTimeout(() => {
-                        if (!form.submitted) {
-                            this.innerHTML = originalText;
-                            this.disabled = false;
-                        }
-                    }, 5000);
-                }
-            });
-        });
     });
     
     // Función para confirmar reactivación de campañas
@@ -499,6 +467,38 @@
             });
         });
     });
+
+    // Validar el formulario de nueva campaña
+    function validarFormulario(clienteId) {
+        const form = document.getElementById('crear-campania-form-' + clienteId);
+        if (!form) return false;
+        
+        const cmSelect = form.querySelector('select[name="community_manager_id"]');
+        const nombreInput = form.querySelector('input[name="nombre"]');
+        const descripcionInput = form.querySelector('textarea[name="descripcion"]');
+        
+        if (!cmSelect || !cmSelect.value) {
+            alert('Por favor, seleccione un Community Manager');
+            if (cmSelect) cmSelect.focus();
+            return false;
+        }
+        
+        if (!nombreInput || !nombreInput.value.trim()) {
+            alert('Por favor, ingrese un nombre para la campaña');
+            if (nombreInput) nombreInput.focus();
+            return false;
+        }
+        
+        if (!descripcionInput || !descripcionInput.value.trim()) {
+            alert('Por favor, ingrese una descripción para la campaña');
+            if (descripcionInput) descripcionInput.focus();
+            return false;
+        }
+        
+        // Si todo es válido, permitir que el botón muestre su estado de "Procesando..." 
+        // y se realice el submit natural
+        return true;
+    }
 </script>
 
 <!-- Estilos adicionales para mejorar la experiencia -->

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use App\Models\ComprobantePago;
 class Pago extends Model
 {
     use HasFactory, SoftDeletes;
@@ -53,5 +53,9 @@ class Pago extends Model
     public function codigoPago()
     {
         return $this->hasOne(CodigoPago::class);
+    }
+      public function comprobantePago()
+    {
+        return $this->hasOne(ComprobantePago::class);
     }
 }

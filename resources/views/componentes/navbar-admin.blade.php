@@ -15,8 +15,10 @@
         <!-- Menú de navegación -->
         <div class="sidebar-menu">
             <div class="menu-label">MENU</div>
+            
+            <!-- Dashboard -->
             <div class="menu-item">
-                <a href="#" class="menu-link" onclick="toggleSubmenu(this)">
+                <a href="{{ route('administrador.dashboard') }}" class="menu-link">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"/>
                         <rect x="14" y="3" width="7" height="7"/>
@@ -24,43 +26,85 @@
                         <rect x="3" y="14" width="7" height="7"/>
                     </svg>
                     <span class="menu-text">Dashboard</span>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"/>
-                    </svg>
                 </a>
-                <div class="submenu">
-                    <div class="submenu-item">
-                        <a href="{{ route('administrador.usuarios.index') }}"class="submenu-link">Usuarios</a>
-                    </div>
-                    <div class="submenu-item">
-                        <a href="{{ route('administrador.planes.index') }}" class="submenu-link">Planes</a>
-                    </div>
-                    <div class="submenu-item">
-                        <a href="{{ route('administrador.pagos.index') }}" class="submenu-link">Pagos</a>
-                    </div>
-                  
-                </div>
             </div>
 
+            <!-- Usuarios -->
             <div class="menu-item">
-                <a href="#" class="menu-link" onclick="toggleSubmenu(this)">
+                <a href="{{ route('administrador.usuarios.index') }}" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <span class="menu-text">Usuarios</span>
+                </a>
+            </div>
+
+            <!-- Empresas -->
+            <div class="menu-item">
+                <a href="{{ route('administrador.empresas.index') }}" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 21h18"></path>
+                        <path d="M5 21V7l8-4v18"></path>
+                        <path d="M19 21V11l-6-3"></path>
+                        <rect x="9" y="9" width="4" height="4"></rect>
+                        <rect x="9" y="14" width="4" height="4"></rect>
+                    </svg>
+                    <span class="menu-text">Empresas</span>
+                </a>
+            </div>
+
+            <!-- Cuestionario briefing -->
+            <div class="menu-item">
+                <a href="{{ route('administrador.cuestionario.estructura.index') }}" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span class="menu-text">Cuestionario briefing</span>
+                </a>
+            </div>
+
+            <!-- Planes -->
+            <div class="menu-item">
+                <a href="{{ route('administrador.planes.index') }}" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="9" x2="15" y2="9"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <span class="menu-text">Planes</span>
+                </a>
+            </div>
+
+            <!-- Pagos -->
+            <div class="menu-item">
+                <a href="{{ route('administrador.pagos.index') }}" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    <span class="menu-text">Pagos</span>
+                </a>
+            </div>
+
+            <!-- Campañas -->
+            <div class="menu-item">
+                <a href="{{ route('administrador.campañas.index') }}" class="menu-link">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                         <rect x="9" y="9" width="6" height="6"/>
                     </svg>
                     <span class="menu-text">Campañas</span>
-                    <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="9 18 15 12 9 6"/>
-                    </svg>
                 </a>
-                <div class="submenu">
-                    <div class="submenu-item">
-                        <a href="{{ route('administrador.campañas.index') }}" class="submenu-link">Gestionar Campañas</a>
-                    </div>
-                   
-                </div>
             </div>
 
+            <!-- Analiticas de Rendimiento -->
             <div class="menu-item">
                 <a href="{{ route('admin.analiticas.index') }}" class="menu-link">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -68,9 +112,24 @@
                         <line x1="12" y1="20" x2="12" y2="4"/>
                         <line x1="6" y1="20" x2="6" y2="14"/>
                     </svg>
-                    <span class="menu-text">Analíticas</span>
+                    <span class="menu-text">Analiticas de Rendimiento</span>
                 </a>
             </div>  
+
+            <!-- Logs -->
+            <div class="menu-item">
+                <a href="{{ route('administrador.logs.index') }}" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                        <path d="M12 11h4"></path>
+                        <path d="M12 16h4"></path>
+                        <path d="M8 11h.01"></path>
+                        <path d="M8 16h.01"></path>
+                    </svg>
+                    <span class="menu-text">Logs</span>
+                </a>
+            </div>
         </div>
 
         <!-- Sección de usuario mejorada -->
@@ -116,8 +175,6 @@
                         <span>Mi Perfil</span>
                     </a>
                     
-                   
-                    
                     <div class="dropdown-divider"></div>
                     
                     <div class="dropdown-item">
@@ -135,9 +192,6 @@
         </div>
     </div>
 
-
-
-
     <!-- Popup de confirmación para cerrar sesión -->
     <div class="confirmation-popup" id="logoutConfirmationPopup">
         <div class="confirmation-box">
@@ -151,7 +205,5 @@
             </div>
         </div>
     </div>
-
-   
 </body>
 </html>

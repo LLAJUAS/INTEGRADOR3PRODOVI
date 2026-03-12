@@ -22,4 +22,9 @@ class Caracteristica extends Model
     {
         return $this->hasMany(PlanCaracteristica::class, 'caracteristica_id');
     }
+     public function planes()
+    {
+        return $this->belongsToMany(Plan::class, 'plan_caracteristica', 'caracteristica_id', 'plan_id')
+            ->withPivot('cantidad', 'frecuencia', 'orden', 'es_destacado');
+    }
 }

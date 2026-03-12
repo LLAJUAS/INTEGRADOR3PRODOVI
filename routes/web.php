@@ -8,11 +8,14 @@ use App\Http\Controllers\Cliente\PagoClienteController;
 use App\Http\Controllers\FacebookPostController;
 use App\Http\Controllers\SocialSimulatorController;
 use App\Http\Controllers\Admin\AdminAnaliticasController;
-
+use App\Http\Controllers\Admin\PagoAdminController;
+use App\Http\Controllers\Admin\PlanMarketingController;
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\CuestionarioController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\ResumenController;
 
 Route::get('/chatbot', [ChatbotController::class, 'mostrarVista'])->name('chatbot.vista');
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,7 +31,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::prefix('api')->group(function () {
     Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])
         ->name('auth.google.redirect');
-        
     Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])
         ->name('auth.google.callback');
 });
@@ -39,16 +41,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/clientes/dashboard', [ClienteController::class, 'dashboard'])->name('clientes.dashboard');
     Route::get('/clientes/micuenta', [ClienteController::class, 'miCuenta'])->name('clientes.micuenta');
     Route::get('/clientes/brief', [ClienteController::class, 'brief'])->name('clientes.brief');
-      // Cambia esta ruta para usar el nuevo controlador
     Route::get('/clientes/analiticas', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'index'])
         ->name('clientes.analiticas');
     Route::get('/clientes/analiticas/exportar-pdf', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'exportarPDF'])
-    ->name('clientes.analiticas.exportar-pdf');
-    
-    // Agrega la ruta para cargar las vistas parciales
+        ->name('clientes.analiticas.exportar-pdf');
+    Route::get('/clientes/analiticas/reporte-engagement', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'exportarReporteEngagement'])
+        ->name('clientes.analiticas.reporte-engagement');
+    Route::get('/clientes/analiticas/reporte-alcance', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'exportarReporteAlcance'])
+        ->name('clientes.analiticas.reporte-alcance');
+    Route::get('/clientes/analiticas/reporte-seguidores', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'exportarReporteSeguidores'])
+        ->name('clientes.analiticas.reporte-seguidores');
     Route::get('/clientes/analiticas/load-view', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'loadView'])
         ->name('clientes.analiticas.load-view');
-     
     
     // Rutas de pago del cliente
     Route::get('/clientes/pago/{plan}', [PagoClienteController::class, 'show'])->name('clientes.pago');
@@ -66,51 +70,41 @@ Route::post('/facebook/post', [FacebookPostController::class, 'postToPage'])->na
 
 // Rutas de administrador
 Route::prefix('administrador')->middleware('auth')->group(function () {
-      // Rutas para publicaciones
-    Route::get('/publicaciones/publicar', [\App\Http\Controllers\Admin\PublicacionController::class, 'index'])
-         ->name('administrador.publicaciones.publicar');
-         
-    Route::get('/dashboard', function () {
-        return view('administrador.dashboard');
-    })->name('administrador.dashboard');
-    // Ruta para el panel de analíticas del administrador
-    Route::get('/analiticas', [\App\Http\Controllers\Admin\AdminAnaliticasController::class, 'index'])
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('administrador.dashboard');
+    Route::get('/analiticas', [AdminAnaliticasController::class, 'index'])
         ->name('admin.analiticas.index');
-
-    // Ruta para guardar nueva campaña desde el modal (AJAX)
-    Route::post('/analiticas/store-campania', [\App\Http\Controllers\Admin\AdminAnaliticasController::class, 'storeCampania'])
+    Route::post('/analiticas/store-campania', [AdminAnaliticasController::class, 'storeCampania'])
         ->name('admin.analiticas.storeCampania');
-
-    // Ruta para exportar campañas
-    Route::get('/analiticas/export-campanias', [\App\Http\Controllers\Admin\AdminAnaliticasController::class, 'exportCampanias'])
+    Route::get('/analiticas/export-campanias', [AdminAnaliticasController::class, 'exportCampanias'])
         ->name('admin.analiticas.exportCampanias');
+    Route::get('/admin/generar-reporte-campanas', [AdminAnaliticasController::class, 'generarReporteCampanas'])
+        ->name('admin.generar.reporte.campanas');
 
     // Gestión de pagos
     Route::prefix('pagos')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\PagoAdminController::class, 'index'])
-             ->name('administrador.pagos.index');
-             
-        Route::get('/realizados', [\App\Http\Controllers\Admin\PagoAdminController::class, 'pagosRealizados'])
-             ->name('administrador.pagos.realizados');
-             
-        // Ruta actualizada para pagos pendientes físicos
-        Route::get('/pendientes-fisicos', [\App\Http\Controllers\Admin\PagoAdminController::class, 'pagosPendientesFisicos'])
-             ->name('administrador.pagos.pendientes-fisicos'); // Nombre actualizado
-             
-        Route::get('/finalizados-sin-renovacion', [\App\Http\Controllers\Admin\PagoAdminController::class, 'pagosFinalizadosSinRenovacion'])
-             ->name('administrador.pagos.finalizados');
-             
-        Route::post('/aprobar/{pago}', [\App\Http\Controllers\Admin\PagoAdminController::class, 'aprobarPagoFisico'])
-             ->name('administrador.pagos.aprobar');
-             
-        // Nuevas rutas para cancelar y reactivar suscripciones
-        Route::put('/cancelar/{pago}', [\App\Http\Controllers\Admin\PagoAdminController::class, 'cancelarSuscripcion'])
-             ->name('administrador.pagos.cancelar');
-             
-        Route::put('/reactivar/{pago}', [\App\Http\Controllers\Admin\PagoAdminController::class, 'reactivarSuscripcion'])
-             ->name('administrador.pagos.reactivar');
+        Route::get('/', [PagoAdminController::class, 'index'])
+            ->name('administrador.pagos.index');
+        Route::get('/realizados', [PagoAdminController::class, 'pagosRealizados'])
+            ->name('administrador.pagos.realizados');
+        Route::get('/pendientes-fisicos', [PagoAdminController::class, 'pagosPendientesFisicos'])
+            ->name('administrador.pagos.pendientes-fisicos');
+        Route::get('/finalizados-sin-renovacion', [PagoAdminController::class, 'pagosFinalizadosSinRenovacion'])
+            ->name('administrador.pagos.finalizados');
+        Route::post('/aprobar/{pago}', [PagoAdminController::class, 'aprobarPagoFisico'])
+            ->name('administrador.pagos.aprobar');
+        Route::put('/cancelar/{pago}', [PagoAdminController::class, 'cancelarSuscripcion'])
+            ->name('administrador.pagos.cancelar');
+        Route::put('/reactivar/{pago}', [PagoAdminController::class, 'reactivarSuscripcion'])
+            ->name('administrador.pagos.reactivar');
+        Route::get('/buscar', [PagoAdminController::class, 'buscarPagos'])->name('administrador.pagos.buscar');
+        Route::post('/cancelar/{pagoId}', [PagoAdminController::class, 'cancelarSuscripcionApi'])->name('administrador.pagos.cancelar.api');
+        Route::post('/reactivar/{pagoId}', [PagoAdminController::class, 'reactivarSuscripcionApi'])->name('administrador.pagos.reactivar.api');
+        Route::get('/descargar-pdf', [PagoAdminController::class, 'descargarPDF'])->name('administrador.pagos.descargar.pdf');
+        Route::get('/descargar-excel', [PagoAdminController::class, 'descargarExcel'])->name('administrador.pagos.descargar.excel');
+        Route::get('/reporte-mensual/pdf', [PagoAdminController::class, 'descargarPDFMensual'])->name('administrador.pagos.mensual.pdf');
+        Route::get('/reporte-mensual/excel', [PagoAdminController::class, 'descargarExcelMensual'])->name('administrador.pagos.mensual.excel');
     });
-    
+
     // Gestión de planes
     Route::resource('planes', 'App\Http\Controllers\Admin\PlanController')
         ->except(['show'])
@@ -122,112 +116,171 @@ Route::prefix('administrador')->middleware('auth')->group(function () {
             'update' => 'administrador.planes.update',
             'destroy' => 'administrador.planes.destroy'
         ]);
-    
     Route::get('/planes/caracteristica-form', [\App\Http\Controllers\Admin\PlanController::class, 'caracteristicaForm'])
-         ->name('administrador.planes.caracteristica-form');
-});
+        ->name('administrador.planes.caracteristica-form');
 
-// Rutas de gestión de usuarios
-Route::get('/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'index'])
-     ->name('administrador.usuarios.index');
-     
-Route::delete('/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])
-     ->name('administrador.usuarios.destroy');
+    // Logs
+    Route::get('/logs', [\App\Http\Controllers\Admin\LogController::class, 'index'])->name('administrador.logs.index');
+    Route::get('/logs/export/{type}', [\App\Http\Controllers\Admin\LogController::class, 'exportPdf'])->name('administrador.logs.export');
 
-// Rutas de gestión de usuarios eliminados
-Route::get('/usuarios/eliminados', [\App\Http\Controllers\Admin\UserController::class, 'deletedUsers'])
-     ->name('administrador.usuarios.eliminados');
-     
-Route::patch('/usuarios/restore/{user}', [\App\Http\Controllers\Admin\UserController::class, 'restore'])
-     ->name('administrador.usuarios.restore');
+    // Gestión de campañas
+    Route::prefix('campañas')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\CampañasController::class, 'index'])
+            ->name('administrador.campañas.index');
+        Route::post('/guardar', [\App\Http\Controllers\Admin\CampañasController::class, 'guardar'])
+            ->name('administrador.campañas.guardar');
+        Route::get('/{campania}', [\App\Http\Controllers\Admin\CampañasController::class, 'show'])
+            ->name('administrador.campañas.show');
+        Route::get('/{campania}/editar', [\App\Http\Controllers\Admin\CampañasController::class, 'edit'])
+            ->name('administrador.campañas.edit');
+        Route::put('/{campania}', [\App\Http\Controllers\Admin\CampañasController::class, 'update'])
+            ->name('administrador.campañas.update');
+        Route::patch('/{campania}/activar', [\App\Http\Controllers\Admin\CampañasController::class, 'activar'])
+            ->name('administrador.campañas.activar');
+        Route::get('/{campania}/calendario', [\App\Http\Controllers\Admin\TareaController::class, 'calendario'])
+            ->name('administrador.campañas.calendario');
+        
+        // Rutas para tareas
+        Route::prefix('/{campania}/tareas')->group(function () {
+            Route::get('/crear', [\App\Http\Controllers\Admin\TareaController::class, 'create'])
+                ->name('administrador.tareas.create');
+            Route::post('/', [\App\Http\Controllers\Admin\TareaController::class, 'store'])
+                ->name('administrador.tareas.store');
+        });
+    });
 
-
-
-// Ruta para obtener el plan contratado por el usuario
-// Dentro del grupo de rutas con middleware 'auth'
-Route::get('/cliente/plan-contratado', [\App\Http\Controllers\Cliente\PlanController::class, 'getPlanContratado'])
-    ->name('cliente.plan-contratado');
-//CAMPAÑAS
-// Gestión de campañas
-Route::prefix('campañas')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\CampañasController::class, 'index'])
-         ->name('administrador.campañas.index');
-
-    Route::post('/guardar', [\App\Http\Controllers\Admin\CampañasController::class, 'guardar'])
-         ->name('administrador.campañas.guardar');
-         
-    // Nuevas rutas para ver y editar campañas
-    Route::get('/{campania}', [\App\Http\Controllers\Admin\CampañasController::class, 'show'])
-         ->name('administrador.campañas.show');
-         
-    Route::get('/{campania}/editar', [\App\Http\Controllers\Admin\CampañasController::class, 'edit'])
-         ->name('administrador.campañas.edit');
-         
-    Route::put('/{campania}', [\App\Http\Controllers\Admin\CampañasController::class, 'update'])
-         ->name('administrador.campañas.update');
-         
-    Route::patch('/{campania}/activar', [\App\Http\Controllers\Admin\CampañasController::class, 'activar'])
-         ->name('administrador.campañas.activar');
-         
-
-
-
-   // Rutas para tareas
-Route::prefix('/{campania}/tareas')->group(function () {
-    Route::get('/crear', [\App\Http\Controllers\Admin\TareaController::class, 'create'])
-         ->name('administrador.tareas.create');
-         
-    Route::post('/', [\App\Http\Controllers\Admin\TareaController::class, 'store'])
-         ->name('administrador.tareas.store');
-});
-
-// Otras rutas de tareas
-Route::get('/tareas/{tarea}', [\App\Http\Controllers\Admin\TareaController::class, 'show'])
-    ->name('administrador.tareas.show');
-
-Route::get('/tareas/{tarea}/edit', [\App\Http\Controllers\Admin\TareaController::class, 'edit'])
-    ->name('administrador.tareas.edit');
-
-Route::put('/tareas/{tarea}', [\App\Http\Controllers\Admin\TareaController::class, 'update'])
-    ->name('administrador.tareas.update');
-
+    // Otras rutas de tareas
+    Route::get('/tareas/{tarea}', [\App\Http\Controllers\Admin\TareaController::class, 'show'])
+        ->name('administrador.tareas.show');
+    Route::get('/tareas/{tarea}/edit', [\App\Http\Controllers\Admin\TareaController::class, 'edit'])
+        ->name('administrador.tareas.edit');
+    Route::put('/tareas/{tarea}', [\App\Http\Controllers\Admin\TareaController::class, 'update'])
+        ->name('administrador.tareas.update');
 
     // Rutas para archivos de tareas
-// Ruta para mostrar tarea individual
-Route::get('/tareas/{tarea}', [\App\Http\Controllers\Admin\TareaController::class, 'show'])
-    ->name('administrador.tareas.show');
+    Route::prefix('/tareas/{tarea}/archivos')->group(function () {
+        Route::get('/subir', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'create'])
+            ->name('administrador.tareas.archivos.create');
+        Route::post('/', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'store'])
+            ->name('administrador.tareas.archivos.store');
+    });
+    Route::put('/tareas/archivos/{archivo}/estado', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'updateEstado'])
+        ->name('administrador.tareas.archivos.update-estado');
+    Route::get('/tareas/{tarea}/ver-subidas', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'verSubidas'])
+        ->name('administrador.tareas.ver-subidas');
 
-// Ruta para subir archivos
-Route::prefix('/tareas/{tarea}/archivos')->group(function () {
-    Route::get('/subir', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'create'])
-         ->name('administrador.tareas.archivos.create');
-         
-    Route::post('/', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'store'])
-         ->name('administrador.tareas.archivos.store');
+    // Rutas para comentarios de tareas
+    Route::prefix('/tareas/{tarea}/comentarios')->group(function () {
+        Route::post('/', [\App\Http\Controllers\Admin\TareaComentarioController::class, 'store'])
+            ->name('administrador.tareas.comentarios.store');
+        Route::delete('/{comentario}', [\App\Http\Controllers\Admin\TareaComentarioController::class, 'destroy'])
+            ->name('administrador.tareas.comentarios.destroy');
+    });
+
+    // Gestión de usuarios
+    Route::get('/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'index'])
+        ->name('administrador.usuarios.index');
+    Route::get('/usuarios/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])
+        ->name('administrador.usuarios.create');
+    Route::post('/usuarios', [\App\Http\Controllers\Admin\UserController::class, 'store'])
+        ->name('administrador.usuarios.store');
+    Route::get('/usuarios/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])
+        ->name('administrador.usuarios.edit');
+    Route::put('/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])
+        ->name('administrador.usuarios.update');
+    Route::delete('/usuarios/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])
+        ->name('administrador.usuarios.destroy');
+    Route::get('/usuarios/eliminados', [\App\Http\Controllers\Admin\UserController::class, 'deletedUsers'])
+        ->name('administrador.usuarios.eliminados');
+    Route::patch('/usuarios/restore/{user}', [\App\Http\Controllers\Admin\UserController::class, 'restore'])
+        ->name('administrador.usuarios.restore');
+    Route::get('/usuarios/{user}/view', [\App\Http\Controllers\Admin\UserViewController::class, 'show'])
+        ->name('administrador.usuarios.view');
+
+    // ========================================
+    // RUTAS PARA EMPRESAS Y PLANES DE MARKETING (CONSOLIDADAS)
+    // ========================================
+    Route::prefix('empresas')->name('administrador.empresas.')->group(function () {
+      // Rutas para mostrar y gestionar la empresa
+Route::get('/', [App\Http\Controllers\Admin\EmpresaAdminController::class, 'index'])->name('index');
+Route::get('/{id}', [App\Http\Controllers\Admin\EmpresaAdminController::class, 'show'])->name('show');
+        // Rutas para el cuestionario
+        Route::get('/{id}/cuestionario', [App\Http\Controllers\Admin\CuestionarioAdminController::class, 'show'])->name('cuestionario.show');
+        Route::put('/{id}/cuestionario', [App\Http\Controllers\Admin\CuestionarioAdminController::class, 'update'])->name('cuestionario.update'); 
+        
+        // Rutas para el resumen ejecutivo
+        Route::get('/{id}/editar-resumen', [App\Http\Controllers\Admin\ResumenAdminController::class, 'edit'])->name('editar-resumen');
+        Route::put('/{id}/editar-resumen', [App\Http\Controllers\Admin\ResumenAdminController::class, 'update'])->name('update-resumen');
+        Route::delete('/{id}/eliminar-resumen', [App\Http\Controllers\Admin\ResumenAdminController::class, 'destroy'])->name('eliminar-resumen');
+        
+        // Rutas para el reporte
+        Route::get('/{id}/reporte', [App\Http\Controllers\Admin\ReporteController::class, 'show'])->name('reporte');
+        Route::get('/{id}/reporte/pdf', [App\Http\Controllers\Admin\ReporteController::class, 'downloadPdf'])->name('reporte.pdf');
+
+        // Rutas para planes de marketing
+        Route::get('/{empresa}/crear-plan', [App\Http\Controllers\Admin\PlanMarketingController::class, 'create'])->name('crear-plan');
+        Route::post('/{empresa}/planes-marketing', [App\Http\Controllers\Admin\PlanMarketingController::class, 'store'])->name('planes-marketing.store');
+        Route::get('/planes-marketing/{planMarketing}', [App\Http\Controllers\Admin\PlanMarketingController::class, 'show'])->name('planes-marketing.show');
+
+// Ruta para mostrar el formulario de edición de un plan
+Route::get('/planes-marketing/{planMarketing}/edit', [App\Http\Controllers\Admin\PlanMarketingController::class, 'edit'])->name('planes-marketing.edit');
+        // Ruta para actualizar el contenido del plan
+    Route::put('/planes-marketing/{planMarketing}', [App\Http\Controllers\Admin\PlanMarketingController::class, 'update'])->name('planes-marketing.update');
+        // Ruta para eliminar el plan
+    Route::delete('/planes-marketing/{planMarketing}', [App\Http\Controllers\Admin\PlanMarketingController::class, 'destroy'])->name('planes-marketing.destroy');
+
+    // Ruta para descargar el plan como PDF
+    Route::get('/planes-marketing/{planMarketing}/descargar-pdf', [App\Http\Controllers\Admin\PlanMarketingController::class, 'downloadPDF'])->name('planes-marketing.download-pdf');
+
+    // Ruta para descargar el plan como Word
+    Route::get('/planes-marketing/{planMarketing}/descargar-word', [App\Http\Controllers\Admin\PlanMarketingController::class, 'downloadWord'])->name('planes-marketing.download-word');
+
+    });
+
+    // Rutas para publicaciones
+    Route::get('/publicaciones/publicar', [\App\Http\Controllers\Admin\PublicacionController::class, 'index'])
+        ->name('administrador.publicaciones.publicar');
+        Route::post('/publicaciones/generar-copy', [\App\Http\Controllers\Admin\PublicacionController::class, 'generateCopy'])
+    ->name('publicaciones.generate.copy');
+        
 });
 
-
-
-// Rutas para comentarios de tareas
-Route::prefix('/tareas/{tarea}/comentarios')->group(function () {
-    Route::post('/', [\App\Http\Controllers\Admin\TareaComentarioController::class, 'store'])
-         ->name('administrador.tareas.comentarios.store');
-         
-    Route::delete('/{comentario}', [\App\Http\Controllers\Admin\TareaComentarioController::class, 'destroy'])
-         ->name('administrador.tareas.comentarios.destroy');
+// Rutas para empresas (solo para clientes)
+Route::prefix('empresas')->middleware('auth')->name('empresas.')->group(function () {
+    Route::get('/', [EmpresaController::class, 'index'])->name('index');
+    Route::get('/create', [EmpresaController::class, 'create'])->name('create');
+    Route::post('/', [EmpresaController::class, 'store'])->name('store');
+    Route::get('/{id}', [EmpresaController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [EmpresaController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [EmpresaController::class, 'update'])->name('update');
+    Route::delete('/{id}', [EmpresaController::class, 'destroy'])->name('destroy');
+    
+    // Rutas para cuestionario
+    Route::get('/{id}/cuestionario', [CuestionarioController::class, 'show'])->name('cuestionario');
+    Route::post('/{id}/cuestionario', [CuestionarioController::class, 'store'])->name('cuestionario.store');
 });
-Route::put('/tareas/archivos/{archivo}/estado', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'updateEstado'])
-     ->name('administrador.tareas.archivos.update-estado');
-// Ruta para ver tareas subidas (nueva vista)
-Route::get('/tareas/{tarea}/ver-subidas', [\App\Http\Controllers\Admin\TareaArchivoController::class, 'verSubidas'])
-     ->name('administrador.tareas.ver-subidas');
 
+// Rutas para clientes (historial de pagos)
+Route::get('/clientes/historial-pagos', [PagoClienteController::class, 'historialPagos'])
+    ->name('clientes.historial.pagos');
+Route::get('/clientes/pagos/comprobante/{id}', [PagoClienteController::class, 'verComprobante'])
+    ->name('clientes.pagos.comprobante');
+Route::get('/clientes/pagos/descargar/{id}', [PagoClienteController::class, 'descargarComprobante'])
+    ->name('clientes.pagos.descargar');
 
-// Ruta para el calendario de tareas
-// Dentro del grupo de rutas de campañas
-Route::get('/{campania}/calendario', [\App\Http\Controllers\Admin\TareaController::class, 'calendario'])
-     ->name('administrador.campañas.calendario');
-Route::get('/admin/generar-reporte-campanas', [AdminAnaliticasController::class, 'generarReporteCampanas'])
-     ->name('admin.generar.reporte.campanas');
+// Ruta para generar el resumen de una empresa específica
+Route::post('/empresas/{empresa}/generar-resumen', [ResumenController::class, 'generate'])->name('empresas.generarResumen');
 
+// Ruta para obtener el plan contratado por el usuario
+Route::get('/cliente/plan-contratado', [\App\Http\Controllers\Cliente\PlanController::class, 'getPlanContratado'])
+    ->name('cliente.plan-contratado');
+// Rutas para gestionar la ESTRUCTURA del cuestionario (solo admin)
+Route::prefix('administrador/cuestionario/estructura')->name('administrador.cuestionario.estructura.')->middleware('auth')->group(function () {
+    Route::get('/', [App\Http\Controllers\Admin\CuestionarioEstructuraController::class, 'index'])->name('index');
+    Route::get('/crear', [App\Http\Controllers\Admin\CuestionarioEstructuraController::class, 'create'])->name('create');
+    Route::post('/', [App\Http\Controllers\Admin\CuestionarioEstructuraController::class, 'store'])->name('store');
+    Route::get('/{tema}/editar', [App\Http\Controllers\Admin\CuestionarioEstructuraController::class, 'edit'])->name('edit');
+    Route::put('/{tema}', [App\Http\Controllers\Admin\CuestionarioEstructuraController::class, 'update'])->name('update');
+    Route::delete('/{tema}', [App\Http\Controllers\Admin\CuestionarioEstructuraController::class, 'destroy'])->name('destroy');
+    Route::post('/reorder', [App\Http\Controllers\Admin\CuestionarioEstructuraController::class, 'reorder'])->name('reorder');
 });

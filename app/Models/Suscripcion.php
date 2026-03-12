@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne; // <-- AÑADE ESTA LÍNEA
 use Carbon\Carbon;
+use App\Models\PlanMarketing;
 
 class Suscripcion extends Model
 {
@@ -64,6 +66,14 @@ class Suscripcion extends Model
     public function pagos()
     {
         return $this->hasMany(Pago::class);
+    }
+
+    /**
+     * Obtiene el plan de marketing asociado a esta suscripción.
+     */
+    public function planMarketing(): HasOne // <-- USA EL TIPO CORRECTO
+    {
+        return $this->hasOne(PlanMarketing::class);
     }
 
     public function getEstaActivaAttribute()

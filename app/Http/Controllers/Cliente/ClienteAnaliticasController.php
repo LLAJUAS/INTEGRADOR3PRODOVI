@@ -10,42 +10,184 @@ class ClienteAnaliticasController extends Controller
 {
     public function index()
     {
-        return view('clientes.analiticas');
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $data = $allData['last30days'] ?? [];
+        } else {
+            $data = [];
+        }
+
+        return view('clientes.analiticas', compact('data'));
     }
 
     public function loadView(Request $request)
     {
         $view = $request->input('view');
         
-        // Validar que la vista solicitada existe
-        $validViews = ['last7days', 'last30days', 'thisyear'];
+        // Mapeo del parámetro select a las llaves del JSON
+        $periodMap = [
+            '7dias' => 'last7days',
+            '30dias' => 'last30days',
+            'anual' => 'thisyear'
+        ];
         
-        if (!in_array($view, $validViews)) {
-            $view = 'last30days';
+        $periodKey = $periodMap[$view] ?? 'last30days';
+        
+        // Cargar los datos desde el archivo JSON
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $data = $allData[$periodKey] ?? [];
+        } else {
+            $data = []; // Fallback por si no existe
         }
         
-        return view("clientes.analiticas.partials.{$view}");
+        return view("clientes.analiticas.partials.analiticas", compact('data'));
     }
 
-   public function exportarPDF(Request $request)
-{
-    $periodo = $request->input('periodo', '30dias');
+    public function exportarPDF(Request $request)
+    {
+        $periodo = $request->input('periodo', '30dias');
 
-    $data = [
-        'fecha_generacion' => now()->format('d/m/Y H:i'),
-        'periodo' => $periodo === '7dias' ? 'Últimos 7 días' : 'Últimos 30 días',
-    ];
+        // Mapeo del parámetro select a las llaves del JSON
+        $periodMap = [
+            '7dias' => 'last7days',
+            '30dias' => 'last30days',
+            'anual' => 'thisyear' // asumiendo en caso que se quiera el general anual
+        ];
+        
+        $periodKey = $periodMap[$periodo] ?? 'last30days';
+        
+        // Cargar los datos desde el archivo JSON
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $jsonData = $allData[$periodKey] ?? [];
+        } else {
+            $jsonData = []; // Fallback por si no existe
+        }
 
-    $view = $periodo === '7dias' ? 'pdf.analiticas_7dias' : 'pdf.analiticas_30dias';
+        $data = [
+            'fecha_generacion' => now()->format('d/m/Y H:i'),
+            'data' => $jsonData,
+        ];
 
-    $pdf = Pdf::loadView($view, $data);
-    $pdf->setPaper('A4', 'portrait');
-    $pdf->setOption('isHtml5ParserEnabled', true);
-    $pdf->setOption('isRemoteEnabled', true);
+        $pdf = Pdf::loadView('pdf.analiticasEmpresa', $data);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
 
-    $nombreArchivo = $periodo === '7dias' ? 'informe_analiticas_7dias.pdf' : 'informe_analiticas_30dias.pdf';
+        $nombreArchivo = "informe_analiticas_{$periodo}.pdf";
 
-    return $pdf->download($nombreArchivo);
-}
+        return $pdf->download($nombreArchivo);
+    }
 
+
+    public function exportarReporteEngagement(Request $request)
+    {
+        $view = $request->input('view', 'last30days');
+        
+        // Mapeo del parámetro select a las llaves del JSON
+        $periodMap = [
+            '7dias' => 'last7days',
+            '30dias' => 'last30days',
+            'anual' => 'thisyear'
+        ];
+        
+        $periodKey = $periodMap[$view] ?? 'last30days';
+        
+        // Cargar los datos desde el archivo JSON
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $data = $allData[$periodKey] ?? [];
+        } else {
+            $data = []; // Fallback por si no existe
+        }
+        
+        $pdfData = [
+            'fecha_generacion' => now()->format('d/m/Y H:i'),
+            'data' => $data
+        ];
+
+        $pdf = Pdf::loadView('pdf.reporte_engagement', $pdfData);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->download("informe_engagement_{$view}.pdf");
+    }
+
+    public function exportarReporteAlcance(Request $request)
+    {
+        $view = $request->input('view', 'last30days');
+        
+        $periodMap = [
+            '7dias' => 'last7days',
+            '30dias' => 'last30days',
+            'anual' => 'thisyear'
+        ];
+        
+        $periodKey = $periodMap[$view] ?? 'last30days';
+        
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $data = $allData[$periodKey] ?? [];
+        } else {
+            $data = [];
+        }
+        
+        $pdfData = [
+            'fecha_generacion' => now()->format('d/m/Y H:i'),
+            'data' => $data
+        ];
+
+        $pdf = Pdf::loadView('pdf.reporte_alcance', $pdfData);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->download("informe_alcance_{$view}.pdf");
+    }
+
+    public function exportarReporteSeguidores(Request $request)
+    {
+        $view = $request->input('view', 'last30days');
+        
+        $periodMap = [
+            '7dias' => 'last7days',
+            '30dias' => 'last30days',
+            'anual' => 'thisyear'
+        ];
+        
+        $periodKey = $periodMap[$view] ?? 'last30days';
+        
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $data = $allData[$periodKey] ?? [];
+        } else {
+            $data = [];
+        }
+        
+        $pdfData = [
+            'fecha_generacion' => now()->format('d/m/Y H:i'),
+            'data' => $data
+        ];
+
+        $pdf = Pdf::loadView('pdf.reporte_seguidores', $pdfData);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->download("informe_seguidores_{$view}.pdf");
+    }
 }

@@ -3,607 +3,234 @@
 @section('title', 'Gestión de Pagos')
 
 @section('content')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-<style>
-/* Estilos adaptados de administrar planes */
-.main-container {
-    min-height: 100vh;
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    margin-top: 1rem;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-}
-
-/* Alerts */
-.alert {
-    display: flex;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: 12px;
-    font-weight: 500;
-    position: relative;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.alert-success {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.alert-danger {
-    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.alert i {
-    margin-right: 0.75rem;
-    font-size: 1.1rem;
-}
-
-.alert-close {
-    background: none;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    margin-left: auto;
-    padding: 0.25rem;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-}
-
-.alert-close:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-/* Header */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    
-    margin-bottom: 1rem;
-   
-}
-
-.header-content h1 {
-    font-size: 2.25rem;
-    font-weight: 700;
-    color: #2d3748;
-    margin: 0 0 0.5rem 0;
-    display: flex;
-    align-items: center;
-}
-
-.header-content h1 i {
-    margin-right: 0.75rem;
-    color: #6f69eb;
-}
-
-.subtitle {
-    color: #64748b;
-    font-size: 1.1rem;
-    margin: 0;
-}
-
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #4f46e5, #7c3aed);
-}
-
-.stat-card.success::before {
-    background: linear-gradient(90deg, #10b981, #059669);
-}
-
-.stat-card.warning::before {
-    background: linear-gradient(90deg, #f59e0b, #d97706);
-}
-
-.stat-card.secondary::before {
-    background: linear-gradient(90deg, #6b7280, #4b5563);
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    border-color: #e2e8f0;
-}
-
-.stat-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-}
-
-.stat-icon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    color: white;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-}
-
-.stat-card.success .stat-icon {
-    background: linear-gradient(135deg, #10b981, #059669);
-}
-
-.stat-card.warning .stat-icon {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-}
-
-.stat-card.secondary .stat-icon {
-    background: linear-gradient(135deg, #6b7280, #4b5563);
-}
-
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #2d3748;
-    line-height: 1;
-}
-
-.stat-title {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 0.5rem;
-}
-
-.stat-description {
-    color: #64748b;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-}
-
-.stat-indicator {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: #4f46e5;
-}
-
-.stat-card.success .stat-indicator {
-    background: #10b981;
-    animation: pulse 2s infinite;
-}
-
-.stat-card.warning .stat-indicator {
-    background: #f59e0b;
-    animation: ping 1s infinite;
-}
-
-.stat-card.secondary .stat-indicator {
-    background: #6b7280;
-}
-
-/* Quick Actions */
-.quick-actions {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border: 2px solid #e2e8f0;
-}
-
-.actions-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.actions-icon {
-    width: 3rem;
-    height: 3rem;
-    background: linear-gradient(135deg, #7c3aed, #ec4899);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    color: white;
-    font-size: 1.25rem;
-}
-
-.actions-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2d3748;
-    margin: 0 0 0.25rem 0;
-}
-
-.actions-subtitle {
-    color: #64748b;
-    margin: 0;
-}
-
-.actions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
-.action-card {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-}
-
-.action-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    border-color: #cbd5e1;
-}
-
-.action-card.primary {
-    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-    border-color: #93c5fd;
-}
-
-.action-card.success {
-    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-    border-color: #86efac;
-}
-
-.action-card.purple {
-    background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-    border-color: #c4b5fd;
-}
-
-.action-card.orange {
-    background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
-    border-color: #fb923c;
-}
-
-.action-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.75rem;
-}
-
-.action-icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 0.75rem;
-    color: white;
-    font-size: 1rem;
-}
-
-.action-card.primary .action-icon {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-}
-
-.action-card.success .action-icon {
-    background: linear-gradient(135deg, #10b981, #059669);
-}
-
-.action-card.purple .action-icon {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
-.action-card.orange .action-icon {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-}
-
-.action-name {
-    font-weight: 600;
-    color: #2d3748;
-    font-size: 1rem;
-}
-
-.action-description {
-    color: #64748b;
-    font-size: 0.875rem;
-    margin-bottom: 0.75rem;
-    text-align: left;
-}
-
-.action-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.action-card.primary .action-badge {
-    background: #bfdbfe;
-    color: #1e40af;
-}
-
-.action-card.success .action-badge {
-    background: #bbf7d0;
-    color: #065f46;
-}
-
-.action-card.purple .action-badge {
-    background: #e9d5ff;
-    color: #581c87;
-}
-
-.action-card.orange .action-badge {
-    background: #fed7aa;
-    color: #9a3412;
-}
-
-.action-card:hover .action-badge {
-    transform: scale(1.05);
-}
-
-/* Buttons */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-    border: none;
-    cursor: pointer;
-    font-size: 0.875rem;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #6863fe, #905cea);
-    color: white;
-    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.25);
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #4338ca, #6d28d9);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(79, 70, 229, 0.4);
-}
-
-.btn i {
-    margin-right: 0.5rem;
-}
-
-/* Animations */
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-@keyframes ping {
-    0% { transform: scale(1); opacity: 1; }
-    75%, 100% { transform: scale(2); opacity: 0; }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .page-header {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .actions-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .header-content h1 {
-        font-size: 1.75rem;
-    }
-}
-</style>
-
-<div class="main-container">
-    <div class="container">
-        <!-- Alerts -->
-        @if(session('success'))
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
-                <span>{{ session('success') }}</span>
-                <button class="alert-close" onclick="this.parentElement.style.display='none'">
-                    <i class="fas fa-times"></i>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <div class="min-h-screen bg-gray-50 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Alerts -->
+            @if(session('success'))
+                <div
+                    class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg shadow-md flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-3 text-xl"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <button onclick="this.parentElement.style.display='none'" class="text-green-500 hover:text-green-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div
+                    class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-md flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-3 text-xl"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                    <button onclick="this.parentElement.style.display='none'" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            @endif
+
+            <!-- Header Section -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800 flex items-center">
+                            <i class="fas fa-credit-card mr-3 text-indigo-600"></i>
+                            Gestión de Pagos
+                        </h1>
+                        <p class="text-gray-600 mt-2">Administra y monitorea el estado de todas las suscripciones</p>
+                    </div>
+                </div>
+            </div>
+          
+          
+            @include('administrador.pagos.filtroPagos')
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Suscripciones Activas -->
+                <div
+                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1">
+                    <div class="bg-gradient-to-r from-green-500 to-green-600 h-2"></div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="bg-green-100 rounded-full p-3">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold text-gray-800">{{ $countActivos }}</div>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Suscripciones Activas</h3>
+                        <p class="text-gray-600 text-sm mb-4">Usuarios con pagos al día</p>
+                        <a href="{{ route('administrador.pagos.realizados') }}"
+                            class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200">
+                            <i class="fas fa-eye mr-2"></i>
+                            Ver detalles
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Pagos Pendientes -->
+                <div
+                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1">
+                    <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 h-2"></div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="bg-yellow-100 rounded-full p-3">
+                                <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold text-gray-800">{{ $countPendientes }}</div>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Pagos Pendientes</h3>
+                        <p class="text-gray-600 text-sm mb-4">Requieren atención inmediata</p>
+                        <a href="{{ route('administrador.pagos.pendientes-fisicos') }}"
+                            class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200">
+                            <i class="fas fa-clock mr-2"></i>
+                            Ver detalles
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Finalizados/Cancelados -->
+                <div
+                    class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl transform hover:-translate-y-1">
+                    <div class="bg-gradient-to-r from-gray-500 to-gray-600 h-2"></div>
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="bg-gray-100 rounded-full p-3">
+                                <i class="fas fa-archive text-gray-600 text-xl"></i>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-bold text-gray-800">{{ $countFinalizados }}</div>
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Finalizados/Cancelados</h3>
+                        <p class="text-gray-600 text-sm mb-4">Suscripciones completadas</p>
+                        <a href="{{ route('administrador.pagos.finalizados') }}"
+                            class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200">
+                            <i class="fas fa-archive mr-2"></i>
+                            Ver detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Section -->
+            <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                <div class="flex items-center mb-6">
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-3 mr-4">
+                        <i class="fas fa-bolt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">Acciones Rápidas</h2>
+                        <p class="text-gray-600">Herramientas esenciales para la gestión de pagos</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div
+                        class="bg-blue-50 border border-blue-200 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-blue-300">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-blue-500 rounded-md p-2 mr-3">
+                                <i class="fas fa-plus text-white"></i>
+                            </div>
+                            <span class="font-semibold text-gray-800">Nuevo Pago</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Registrar un nuevo pago manualmente</p>
+                        <span
+                            class="inline-flex items-center text-xs font-medium text-blue-700 bg-blue-100 rounded-full px-2.5 py-0.5">
+                            <i class="fas fa-mouse-pointer mr-1"></i> Click para acceder
+                        </span>
+                    </div>
+
+                    <div
+                        class="bg-purple-50 border border-purple-200 rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-purple-300">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-purple-500 rounded-md p-2 mr-3">
+                                <i class="fas fa-chart-bar text-white"></i>
+                            </div>
+                            <span class="font-semibold text-gray-800">Reporte Mensual</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">Descarga el reporte mensual de pagos</p>
+                        <span
+                            class="inline-flex items-center text-xs font-medium text-purple-700 bg-purple-100 rounded-full px-2.5 py-0.5">
+                            <i class="fas fa-mouse-pointer mr-1"></i> Click para acceder
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal para Reporte Mensual -->
+<div id="reporteMensualModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-purple-100">
+                <i class="fas fa-chart-bar text-purple-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mt-4">Reporte Mensual</h3>
+            <div class="mt-2 px-7 py-3">
+                <p class="text-sm text-gray-500">
+                    Se generará un reporte con todas las transacciones del mes actual.
+                    Elige el formato que prefieres:
+                </p>
+            </div>
+            <div class="flex justify-center space-x-4 mt-4">
+                <button id="btnPdfMensual" class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <i class="fas fa-file-pdf mr-2"></i> Descargar PDF
+                </button>
+                <button id="btnExcelMensual" class="px-4 py-2 bg-green-600 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <i class="fas fa-file-excel mr-2"></i> Descargar Excel
                 </button>
             </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ session('error') }}</span>
-                <button class="alert-close" onclick="this.parentElement.style.display='none'">
-                    <i class="fas fa-times"></i>
+            <div class="items-center px-4 py-3">
+                <button id="cerrarModal" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                    Cancelar
                 </button>
-            </div>
-        @endif
-        
-        <!-- Header Section -->
-        <div class="page-header">
-            <div class="header-content">
-                <h1><i class="fas fa-credit-card"></i> Gestión de Pagos</h1>
-                <p class="subtitle">Administra y monitorea el estado de todas las suscripciones</p>
-            </div>
-        </div>
-        <hr style="border: 1px solid #e2e8f0; margin-bottom: 2rem;">
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <!-- Suscripciones Activas -->
-            <div class="stat-card success">
-                <div class="stat-header">
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="text-right">
-                        <div class="stat-number">{{ $countActivos }}</div>
-                        <div class="stat-indicator"></div>
-                    </div>
-                </div>
-                <h3 class="stat-title">Suscripciones Activas</h3>
-                <p class="stat-description">Usuarios con pagos al día</p>
-                <a href="{{ route('administrador.pagos.realizados') }}" class="btn btn-primary">
-                    <i class="fas fa-eye"></i>
-                    Ver detalles
-                </a>
-            </div>
-            
-            <!-- Pagos Pendientes -->
-            <div class="stat-card warning">
-                <div class="stat-header">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="text-right">
-                        <div class="stat-number">{{ $countPendientes }}</div>
-                        <div class="stat-indicator"></div>
-                    </div>
-                </div>
-                <h3 class="stat-title">Pagos Pendientes</h3>
-                <p class="stat-description">Requieren atención inmediata</p>
-                <a href="{{ route('administrador.pagos.pendientes-fisicos') }}" class="btn btn-primary">
-                    <i class="fas fa-clock"></i>
-                    Ver detalles
-                </a>
-            </div>
-            
-            <!-- Finalizados/Cancelados -->
-            <div class="stat-card secondary">
-                <div class="stat-header">
-                    <div class="stat-icon">
-                        <i class="fas fa-archive"></i>
-                    </div>
-                    <div class="text-right">
-                        <div class="stat-number">{{ $countFinalizados }}</div>
-                        <div class="stat-indicator"></div>
-                    </div>
-                </div>
-                <h3 class="stat-title">Finalizados/Cancelados</h3>
-                <p class="stat-description">Suscripciones completadas</p>
-                <a href="{{ route('administrador.pagos.finalizados') }}" class="btn btn-primary">
-                    <i class="fas fa-archive"></i>
-                    Ver detalles
-                </a>
-            </div>
-        </div>
-
-        <!-- Quick Actions Section -->
-        <div class="quick-actions">
-            <div class="actions-header">
-                <div class="actions-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <div>
-                    <h2 class="actions-title">Acciones Rápidas</h2>
-                    <p class="actions-subtitle">Herramientas esenciales para la gestión de pagos</p>
-                </div>
-            </div>
-            
-            <div class="actions-grid">
-                <div class="action-card primary">
-                    <div class="action-header">
-                        <div class="action-icon">
-                            <i class="fas fa-plus"></i>
-                        </div>
-                        <span class="action-name">Nuevo Pago</span>
-                    </div>
-                    <p class="action-description">Registrar un nuevo pago manualmente</p>
-                    <span class="action-badge">
-                        <i class="fas fa-mouse-pointer"></i> Click para acceder
-                    </span>
-                </div>
-                
-             
-                
-                <div class="action-card purple">
-                    <div class="action-header">
-                        <div class="action-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <span class="action-name">Reportes</span>
-                    </div>
-                    <p class="action-description">Generar informes detallados</p>
-                    <span class="action-badge">
-                        <i class="fas fa-mouse-pointer"></i> Click para acceder
-                    </span>
-                </div>
-                
-              
             </div>
         </div>
     </div>
 </div>
 
-<script>
-// Auto-hide alerts después de 5 segundos
-document.querySelectorAll('.alert').forEach(alert => {
-    setTimeout(() => {
-        alert.style.opacity = '0';
-        alert.style.transform = 'translateY(-20px)';
-        setTimeout(() => {
-            alert.style.display = 'none';
-        }, 300);
-    }, 5000);
-});
 
-// Agregar interactividad a las action cards
-document.querySelectorAll('.action-card').forEach(card => {
-    card.addEventListener('click', function() {
-        // Aquí puedes agregar la lógica para cada acción
-        const actionName = this.querySelector('.action-name').textContent;
-        console.log(`Acción seleccionada: ${actionName}`);
-        
-        // Ejemplo de feedback visual
-        this.style.transform = 'scale(0.98)';
-        setTimeout(() => {
-            this.style.transform = '';
-        }, 100);
+        </div>
+    </div>
+
+<script>
+    // Evento para abrir el modal de reporte mensual
+document.addEventListener('DOMContentLoaded', function() {
+    // ... tu código existente ...
+
+    // Agregar evento click a la tarjeta de Reporte Mensual
+    const reporteMensualCard = document.querySelector('.bg-purple-50.border.border-purple-200');
+    if (reporteMensualCard) {
+        reporteMensualCard.addEventListener('click', function() {
+            document.getElementById('reporteMensualModal').classList.remove('hidden');
+        });
+    }
+
+    // Evento para cerrar el modal
+    document.getElementById('cerrarModal').addEventListener('click', function() {
+        document.getElementById('reporteMensualModal').classList.add('hidden');
+    });
+
+    // Evento para descargar PDF mensual
+    document.getElementById('btnPdfMensual').addEventListener('click', function() {
+        document.getElementById('reporteMensualModal').classList.add('hidden');
+        window.open('/administrador/pagos/reporte-mensual/pdf', '_blank');
+    });
+
+    // Evento para descargar Excel mensual
+    document.getElementById('btnExcelMensual').addEventListener('click', function() {
+        document.getElementById('reporteMensualModal').classList.add('hidden');
+        window.open('/administrador/pagos/reporte-mensual/excel', '_blank');
     });
 });
 </script>

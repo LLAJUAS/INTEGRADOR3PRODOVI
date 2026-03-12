@@ -64,8 +64,11 @@ class CampañasController extends Controller
         'adminActual' => Auth::user()
     ]);
 }
-    public function guardar(Request $request)
-    {
+  public function guardar(Request $request)
+{
+    \Log::info('Datos recibidos:', $request->all());
+    
+    try {
         $validated = $request->validate([
             'nombre' => 'required|string|max:100',
             'descripcion' => 'required|string',
@@ -81,15 +84,25 @@ class CampañasController extends Controller
                 $query->where('estado', 'activa')
                       ->where('fecha_fin', '>', now());
             })
-            ->firstOrFail();
+            ->first();
 
-        if (!$pago->suscripcion) {
+        if (!$pago || !$pago->suscripcion) {
             return redirect()->back()
-                ->with('error', 'El cliente no tiene una suscripción activa válida');
+                ->with('error', 'El cliente no tiene una suscripción activa válida')
+                ->withInput();
         }
 
+        // Añade esto antes de crear la campaña
+        \Log::info('Datos de la campaña a crear:', [
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'usuario_cliente_id' => $request->usuario_cliente_id,
+            'community_manager_id' => $request->community_manager_id,
+            'usuario_creador_id' => Auth::id(),
+        ]);
+
         // Crear la campaña
-        Campania::create([
+        $campania = Campania::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'fecha_inicio' => now(),
@@ -100,9 +113,18 @@ class CampañasController extends Controller
             'estado' => 'activa'
         ]);
 
+        \Log::info('Campaña creada con ID: ' . $campania->id);
+
         return redirect()->route('administrador.campañas.index')
             ->with('success', 'Campaña creada exitosamente');
+            
+    } catch (\Exception $e) {
+        \Log::error('Error al crear campaña: ' . $e->getMessage());
+        return redirect()->back()
+            ->with('error', 'Ha ocurrido un error al crear la campaña: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     public function activar(Campania $campania)
 {

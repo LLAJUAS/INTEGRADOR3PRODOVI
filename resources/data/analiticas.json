@@ -1,0 +1,734 @@
+{
+    "last7days": {
+        "period_label": "semana anterior",
+        "engagement": {
+            "rate": "5.1%",
+            "vs_previous": "8.5%",
+            "trend": "up",
+            "chart_data": [
+                3.2,
+                3.8,
+                4.1,
+                4.5,
+                4.2,
+                4.7,
+                5.0,
+                4.8,
+                4.6,
+                5.1
+            ]
+        },
+        "interactions_breakdown": {
+            "likes": 42,
+            "comments": 12,
+            "shares": 5,
+            "saves": 18
+        },
+        "engagement_by_type": [
+            {
+                "type": "Imagen",
+                "rate": "4.2%",
+                "interactions": 12
+            },
+            {
+                "type": "Video",
+                "rate": "6.8%",
+                "interactions": 24
+            },
+            {
+                "type": "Reel",
+                "rate": "8.5%",
+                "interactions": 38
+            },
+            {
+                "type": "Carrusel",
+                "rate": "5.4%",
+                "interactions": 18
+            }
+        ],
+        "engagement_by_platform": [
+            {
+                "platform": "Facebook",
+                "rate": "3.8%",
+                "trend": "up"
+            },
+            {
+                "platform": "Instagram",
+                "rate": "6.5%",
+                "trend": "up"
+            }
+        ],
+        "reach": {
+            "total": "1.2K",
+            "vs_previous": "6.7%",
+            "trend": "up",
+            "chart_data": [
+                18,
+                19,
+                20,
+                22,
+                21,
+                23,
+                24,
+                24,
+                25,
+                25.5
+            ]
+        },
+        "followers": {
+            "new": "142",
+            "vs_previous": "4.4%",
+            "trend": "up",
+            "facebook_count": "85",
+            "instagram_count": "57",
+            "facebook_percent": 60,
+            "growth_labels": [
+                "Lun",
+                "Mar",
+                "Mié",
+                "Jue",
+                "Vie",
+                "Sáb",
+                "Dom"
+            ],
+            "growth_facebook": [
+                320,
+                325,
+                330,
+                332,
+                335,
+                338,
+                340
+            ],
+            "growth_instagram": [
+                210,
+                212,
+                213,
+                215,
+                217,
+                218,
+                220
+            ]
+        },
+        "conversion": {
+            "rate": "3.5%",
+            "vs_previous": "0.9%",
+            "trend": "down",
+            "chart_data": [
+                3.5,
+                3.3,
+                3.1,
+                3.4,
+                3.6,
+                3.2,
+                3.0,
+                3.1,
+                3.3,
+                3.5
+            ]
+        },
+        "optimal_time": {
+            "range": "16:00 - 17:00",
+            "engagement_boost": "+28%",
+            "percent": 68
+        },
+        "demographics": {
+            "female_25_34": 45,
+            "male_25_34": 30,
+            "female_18_24": 18
+        },
+        "distribution": {
+            "platform": {
+                "facebook": 58,
+                "instagram": 42
+            },
+            "time": {
+                "labels": [
+                    "6-9",
+                    "9-12",
+                    "12-15",
+                    "15-18",
+                    "18-21",
+                    "21-24"
+                ],
+                "data": [
+                    5,
+                    15,
+                    20,
+                    35,
+                    15,
+                    10
+                ]
+            }
+        },
+        "reach_by_platform": [
+            {
+                "platform": "Facebook",
+                "reach": "750",
+                "trend": "up",
+                "percentage": 62
+            },
+            {
+                "platform": "Instagram",
+                "reach": "450",
+                "trend": "up",
+                "percentage": 38
+            }
+        ],
+        "reach_by_type": [
+            {
+                "type": "Imagen",
+                "reach": "320",
+                "percentage": 27
+            },
+            {
+                "type": "Video",
+                "reach": "410",
+                "percentage": 34
+            },
+            {
+                "type": "Reel",
+                "reach": "380",
+                "percentage": 31
+            },
+            {
+                "type": "Carrusel",
+                "reach": "90",
+                "percentage": 8
+            }
+        ],
+        "top_publications": [
+            {
+                "title": "Dia de la mujer ",
+                "reach": "420",
+                "date": "08/03/2026",
+                "type": "Imagen",
+                "platform": "Facebook"
+            },
+            {
+                "title": "Tutorial de Uso del Dashboard",
+                "reach": "380",
+                "date": "10/03/2026",
+                "type": "Video",
+                "platform": "Facebook"
+            },
+            {
+                "title": " Nuevos horarios de atencion",
+                "reach": "350",
+                "date": "11/03/2026",
+                "type": "Reel",
+                "platform": "Instagram"
+            }
+        ],
+        "growth_publications": [
+            {
+                "platform": "Instagram",
+                "type": "Reel",
+                "new_followers": 28,
+                "date": "10/03/2026"
+            },
+            {
+                "platform": "Facebook",
+                "type": "Video",
+                "new_followers": 15,
+                "date": "09/03/2026"
+            }
+        ],
+        "acquisition_insights": "La mayoría de los seguidores nuevos (65%) provienen del contenido tipo Reel en Instagram, lo que sugiere una alta viralidad del formato vertical."
+    },
+    "last30days": {
+        "period_label": "período anterior",
+        "engagement": {
+            "rate": "4.8%",
+            "vs_previous": "12.5%",
+            "trend": "up",
+            "chart_data": [
+                3.2,
+                3.8,
+                4.1,
+                4.5,
+                4.2,
+                4.7,
+                5.0,
+                4.8,
+                4.6,
+                4.8
+            ]
+        },
+        "interactions_breakdown": {
+            "likes": 185,
+            "comments": 52,
+            "shares": 24,
+            "saves": 65
+        },
+        "engagement_by_type": [
+            {
+                "type": "Imagen",
+                "rate": "3.9%",
+                "interactions": 42
+            },
+            {
+                "type": "Video",
+                "rate": "6.2%",
+                "interactions": 95
+            },
+            {
+                "type": "Reel",
+                "rate": "8.1%",
+                "interactions": 180
+            },
+            {
+                "type": "Carrusel",
+                "rate": "5.1%",
+                "interactions": 62
+            }
+        ],
+        "engagement_by_platform": [
+            {
+                "platform": "Facebook",
+                "rate": "3.5%",
+                "trend": "up"
+            },
+            {
+                "platform": "Instagram",
+                "rate": "6.1%",
+                "trend": "up"
+            }
+        ],
+        "reach": {
+            "total": "4.5K",
+            "vs_previous": "8.3%",
+            "trend": "up",
+            "chart_data": [
+                18,
+                19,
+                20,
+                22,
+                21,
+                23,
+                24,
+                24,
+                25,
+                24.5
+            ]
+        },
+        "followers": {
+            "new": "328",
+            "vs_previous": "5.2%",
+            "trend": "up",
+            "facebook_count": "198",
+            "instagram_count": "130",
+            "facebook_percent": 60,
+            "growth_labels": [
+                "1",
+                "5",
+                "10",
+                "15",
+                "20",
+                "25",
+                "30"
+            ],
+            "growth_facebook": [
+                120,
+                145,
+                160,
+                185,
+                210,
+                240,
+                270
+            ],
+            "growth_instagram": [
+                80,
+                95,
+                110,
+                130,
+                150,
+                170,
+                185
+            ]
+        },
+        "conversion": {
+            "rate": "3.2%",
+            "vs_previous": "1.8%",
+            "trend": "down",
+            "chart_data": [
+                3.5,
+                3.3,
+                3.1,
+                3.4,
+                3.6,
+                3.2,
+                3.0,
+                3.1,
+                3.3,
+                3.2
+            ]
+        },
+        "optimal_time": {
+            "range": "15:00 - 16:00",
+            "engagement_boost": "+32%",
+            "percent": 75
+        },
+        "demographics": {
+            "female_25_34": 42,
+            "male_25_34": 33,
+            "female_18_24": 15
+        },
+        "distribution": {
+            "platform": {
+                "facebook": 55,
+                "instagram": 45
+            },
+            "time": {
+                "labels": [
+                    "6-9",
+                    "9-12",
+                    "12-15",
+                    "15-18",
+                    "18-21",
+                    "21-24"
+                ],
+                "data": [
+                    8,
+                    12,
+                    15,
+                    32,
+                    25,
+                    8
+                ]
+            }
+        },
+        "reach_by_platform": [
+            {
+                "platform": "Facebook",
+                "reach": "2.6K",
+                "trend": "up",
+                "percentage": 58
+            },
+            {
+                "platform": "Instagram",
+                "reach": "1.9K",
+                "trend": "up",
+                "percentage": 42
+            }
+        ],
+        "reach_by_type": [
+            {
+                "type": "Imagen",
+                "reach": "1.1K",
+                "percentage": 24
+            },
+            {
+                "type": "Video",
+                "reach": "1.5K",
+                "percentage": 33
+            },
+            {
+                "type": "Reel",
+                "reach": "1.4K",
+                "percentage": 31
+            },
+            {
+                "type": "Carrusel",
+                "reach": "500",
+                "percentage": 12
+            }
+        ],
+        "top_publications": [
+            {
+                "title": "Lanzamiento de Nueva Función AI",
+                "reach": "1.8K",
+                "date": "15/02/2026",
+                "type": "Reel",
+                "platform": "Instagram"
+            },
+            {
+                "title": "Comparativa de Planes Prodovi",
+                "reach": "1.2K",
+                "date": "22/02/2026",
+                "type": "Video",
+                "platform": "Facebook"
+            },
+            {
+                "title": "Testimonio de Cliente Satisfecho",
+                "reach": "1.1K",
+                "date": "01/03/2026",
+                "type": "Imagen",
+                "platform": "Facebook"
+            }
+        ],
+        "growth_publications": [
+            {
+                "platform": "Instagram",
+                "type": "Reel",
+                "new_followers": 145,
+                "date": "15/02/2026"
+            },
+            {
+                "platform": "Facebook",
+                "type": "Imagen",
+                "new_followers": 62,
+                "date": "01/03/2026"
+            },
+            {
+                "platform": "Instagram",
+                "type": "Carrusel",
+                "new_followers": 48,
+                "date": "20/02/2026"
+            }
+        ],
+        "acquisition_insights": "Se observa un crecimiento constante vinculado a reels en Instagram"
+    },
+    "thisyear": {
+        "period_label": "año anterior",
+        "engagement": {
+            "rate": "4%",
+            "vs_previous": "12.5%",
+            "trend": "up",
+            "chart_data": [
+                3.2,
+                3.8,
+                4.1,
+                4.5,
+                4.2,
+                4.7,
+                5.0,
+                4.8,
+                4.6,
+                4.0
+            ]
+        },
+        "interactions_breakdown": {
+            "likes": 2100,
+            "comments": 480,
+            "shares": 310,
+            "saves": 580
+        },
+        "engagement_by_type": [
+            {
+                "type": "Imagen",
+                "rate": "3.5%",
+                "interactions": 600
+            },
+            {
+                "type": "Video",
+                "rate": "5.8%",
+                "interactions": 1200
+            },
+            {
+                "type": "Reel",
+                "rate": "7.9%",
+                "interactions": 2100
+            },
+            {
+                "type": "Carrusel",
+                "rate": "4.8%",
+                "interactions": 850
+            }
+        ],
+        "engagement_by_platform": [
+            {
+                "platform": "Facebook",
+                "rate": "3.2%",
+                "trend": "up"
+            },
+            {
+                "platform": "Instagram",
+                "rate": "5.9%",
+                "trend": "up"
+            }
+        ],
+        "reach": {
+            "total": "20.3K",
+            "vs_previous": "8.3%",
+            "trend": "up",
+            "chart_data": [
+                18,
+                19,
+                20,
+                22,
+                21,
+                23,
+                24,
+                24,
+                25,
+                20.3
+            ]
+        },
+        "followers": {
+            "new": "328",
+            "vs_previous": "5.2%",
+            "trend": "up",
+            "facebook_count": "198",
+            "instagram_count": "130",
+            "facebook_percent": 60,
+            "growth_labels": [
+                "Ene",
+                "Feb",
+                "Mar",
+                "Abr",
+                "May",
+                "Jun",
+                "Jul",
+                "Ago",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dic"
+            ],
+            "growth_facebook": [
+                120,
+                145,
+                160,
+                185,
+                210,
+                240,
+                270,
+                290,
+                310,
+                320,
+                330,
+                340
+            ],
+            "growth_instagram": [
+                80,
+                95,
+                110,
+                130,
+                150,
+                170,
+                185,
+                195,
+                205,
+                210,
+                215,
+                220
+            ]
+        },
+        "conversion": {
+            "rate": "3.2%",
+            "vs_previous": "1.8%",
+            "trend": "down",
+            "chart_data": [
+                3.5,
+                3.3,
+                3.1,
+                3.4,
+                3.6,
+                3.2,
+                3.0,
+                3.1,
+                3.3,
+                3.2
+            ]
+        },
+        "optimal_time": {
+            "range": "15:00 - 16:00",
+            "engagement_boost": "+32%",
+            "percent": 75
+        },
+        "demographics": {
+            "female_25_34": 42,
+            "male_25_34": 33,
+            "female_18_24": 15
+        },
+        "distribution": {
+            "platform": {
+                "facebook": 55,
+                "instagram": 45
+            },
+            "time": {
+                "labels": [
+                    "6-9",
+                    "9-12",
+                    "12-15",
+                    "15-18",
+                    "18-21",
+                    "21-24"
+                ],
+                "data": [
+                    8,
+                    12,
+                    15,
+                    32,
+                    25,
+                    8
+                ]
+            }
+        },
+        "reach_by_platform": [
+            {
+                "platform": "Facebook",
+                "reach": "11.2K",
+                "trend": "up",
+                "percentage": 55
+            },
+            {
+                "platform": "Instagram",
+                "reach": "9.1K",
+                "trend": "up",
+                "percentage": 45
+            }
+        ],
+        "reach_by_type": [
+            {
+                "type": "Imagen",
+                "reach": "4.5K",
+                "percentage": 22
+            },
+            {
+                "type": "Video",
+                "reach": "7.2K",
+                "percentage": 35
+            },
+            {
+                "type": "Reel",
+                "reach": "6.8K",
+                "percentage": 33
+            },
+            {
+                "type": "Carrusel",
+                "reach": "1.8K",
+                "percentage": 10
+            }
+        ],
+        "top_publications": [
+            {
+                "title": "Campaña Navideña 2023",
+                "reach": "5.2K",
+                "date": "20/12/2023",
+                "type": "Video",
+                "platform": "Facebook"
+            },
+            {
+                "title": "Anuncio de Marca Prodovi",
+                "reach": "4.8K",
+                "date": "10/01/2024",
+                "type": "Reel",
+                "platform": "Instagram"
+            },
+            {
+                "title": "Webinar: Futuro del Marketing",
+                "reach": "3.5K",
+                "date": "05/02/2024",
+                "type": "Imagen",
+                "platform": "Facebook"
+            }
+        ],
+        "growth_publications": [
+            {
+                "platform": "Instagram",
+                "type": "Reel",
+                "new_followers": 850,
+                "date": "10/01/2024"
+            },
+            {
+                "platform": "Facebook",
+                "type": "Video",
+                "new_followers": 620,
+                "date": "20/12/2023"
+            }
+        ],
+        "acquisition_insights": "El crecimiento anual fue impulsado por campañas estacionales y la optimización de pauta para seguidores en Facebook."
+    }
+}

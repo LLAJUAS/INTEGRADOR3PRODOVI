@@ -21,35 +21,60 @@ class GoogleAuthController extends Controller
 public function callback()
 {
     try {
-        $googleUser = Socialite::driver('google')->user();
+        // Crear un cliente Guzzle con verificación SSL deshabilitada
+        $guzzleClient = new \GuzzleHttp\Client([
+            'curl' => [
+                CURLOPT_SSL_VERIFYPEER => false,
+            ],
+        ]);
+        
+        // Establecer este cliente en el driver de Socialite
+        $socialite = Socialite::driver('google')->setHttpClient($guzzleClient);
+        $googleUser = $socialite->user();
+        
+        // Resto de tu código permanece igual
+        $user = User::updateOrCreate(
+            ['email' => $googleUser->getEmail()],
+            [
+                'name' => $googleUser->getName(),
+                'password' => bcrypt(Str::random(16)),
+                'email_verified_at' => now(),
+                'google_id' => $googleUser->getId()
+            ]
+        );
+
+        // Asignar rol si es nuevo
+        if (!$user->roles()->exists()) {
+            RoleUser::updateOrCreate(
+                ['user_id' => $user->id],
+                ['role_id' => 2] // Cliente
+            );
+        }
+
+        Auth::login($user);
+
+        // Guardar Security Log: Login Exitoso con Google
+        \App\Models\SecurityLog::create([
+            'user_id' => $user->id,
+            'event_type' => 'login_success',
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+            'details' => ['method' => 'google_oauth', 'email' => $user->email]
+        ]);
+
+        $user = Auth::user();
+        $user = User::with('roles')->find($user->id);
+
+        $userRole = $user->roles->first();
+
+        if ($userRole && $userRole->nombre_rol === 'Administrador') {
+            return redirect()->route('administrador.dashboard');
+        }
+
+        return redirect()->route('clientes.home');
+        
     } catch (Throwable $e) {
-        return redirect('/')->with('error', 'Google authentication failed.');
+        return redirect('/')->with('error', 'Google authentication failed: ' . $e->getMessage());
     }
-
-    $user = User::updateOrCreate(
-        ['email' => $googleUser->email],
-        [
-            'name' => $googleUser->name,
-            'password' => bcrypt(Str::random(16)), // Contraseña aleatoria segura
-            'email_verified_at' => now(),
-            'google_id' => $googleUser->id // Opcional: guardar ID de Google
-        ]
-    );
-
-    Auth::login($user);
-
-  $user = Auth::user();
-    $user = User::with('roles')->find($user->id); // asegura la relación
-
-    $userRole = $user->roles->first();
-
-
-if ($userRole && $userRole->nombre_rol === 'Administrador') {
-    return redirect()->route('administrador.dashboard');
-}
-
-return redirect()->route('clientes.home');
-
-
 }
 }

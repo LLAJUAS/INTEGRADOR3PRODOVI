@@ -3,104 +3,209 @@
 @section('title', 'Mi Cuenta')
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Columna izquierda - Datos del cliente -->
-        <div class="lg:col-span-1">
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
-                <!-- Header -->
-                <div class="px-8 py-6 border-b border-gray-100">
-                    <h2 class="text-2xl font-bold text-gray-900">Mis Datos</h2>
-                    <p class="text-gray-600 mt-1">Información de tu cuenta</p>
-                </div>
-                
-                <!-- Contenido -->
-                <div class="p-8">
-                    <div class="flex items-center space-x-4 mb-6">
-                        <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                            {{ substr(Auth::user()->name, 0, 1) }}
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-900">{{ Auth::user()->name }}</h3>
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/20">
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8 text-center">
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent mb-2">Mi Cuenta</h1>
+           
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Columna izquierda - Datos del cliente -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 overflow-hidden hover:shadow-3xl transition-all duration-300">
+                    <!-- Header -->
+                    <div class="px-8 py-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                        <h2 class="text-2xl font-bold">Mis Datos</h2>
+                        <p class="text-indigo-100 mt-1">Información de tu cuenta</p>
+                    </div>
+                    
+                    <!-- Contenido -->
+                    <div class="p-8">
+                        <div class="flex flex-col items-center mb-6">
+                            <div class="w-24 h-24 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-xl mb-4 transform hover:scale-105 transition-transform duration-300">
+                                {{ substr(Auth::user()->name, 0, 1) }}
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900">{{ Auth::user()->name }}</h3>
                             <p class="text-gray-600">{{ Auth::user()->email }}</p>
                         </div>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-1">
-                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                                </svg>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start p-3 rounded-xl hover:bg-gray-50 transition-colors duration-200">
+                                <div class="flex-shrink-0 pt-1">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-500">Teléfono</p>
+                                    <p class="text-sm text-gray-900 font-medium">{{ Auth::user()->phone ?? 'No registrado' }}</p>
+                                </div>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-500">Teléfono</p>
-                                <p class="text-sm text-gray-900">{{ Auth::user()->phone ?? 'No registrado' }}</p>
+                            
+                            <div class="flex items-start p-3 rounded-xl hover:bg-gray-50 transition-colors duration-200">
+                                <div class="flex-shrink-0 pt-1">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-500">Rol</p>
+                                    <p class="text-sm text-gray-900 font-medium">
+                                        @foreach(Auth::user()->roles as $role)
+                                            {{ $role->nombre_rol }}
+                                            @if(!$loop->last), @endif
+                                        @endforeach
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start p-3 rounded-xl hover:bg-gray-50 transition-colors duration-200">
+                                <div class="flex-shrink-0 pt-1">
+                                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-500">Miembro desde</p>
+                                    <p class="text-sm text-gray-900 font-medium">{{ Auth::user()->created_at->format('d/m/Y') }}</p>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-1">
-                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        <div class="mt-8 pt-6 border-t border-gray-100">
+                            <a href="#" class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-500">Rol</p>
-                                <p class="text-sm text-gray-900">
-                                    @foreach(Auth::user()->roles as $role)
-                                        {{ $role->nombre_rol }}
-                                        @if(!$loop->last), @endif
-                                    @endforeach
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-1">
-                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm font-medium text-gray-500">Miembro desde</p>
-                                <p class="text-sm text-gray-900">{{ Auth::user()->created_at->format('d/m/Y') }}</p>
-                            </div>
+                                Editar perfil
+                            </a>
                         </div>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Columna derecha - Plan contratado -->
+            <div class="lg:col-span-2">
+                <!-- Plan Contratado Section -->
+                <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 overflow-hidden hover:shadow-3xl transition-all duration-300">
+                    <div class="px-8 py-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                        <h2 class="text-2xl font-bold">Plan Contratado</h2>
+                        <p class="text-indigo-100 mt-1">Detalles de tu suscripción actual</p>
+                    </div>
                     
-                    <div class="mt-8 pt-6 border-t border-gray-100">
-                        <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Editar perfil
-                        </a>
+                    <div class="p-8">
+                        <div class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-3xl border border-indigo-200/50" id="plan-contratado-container">
+                            <div class="text-center py-16">
+                                <div class="relative inline-block">
+                                    <div class="w-20 h-20 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl mx-auto flex items-center justify-center animate-pulse shadow-xl">
+                                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="absolute inset-0 rounded-3xl bg-indigo-600 opacity-20 animate-ping"></div>
+                                </div>
+                                <p class="text-gray-700 mt-6 font-medium text-lg">Cargando información del plan...</p>
+                                <p class="text-sm text-gray-500 mt-2">Esto tomará unos segundos</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Columna derecha - Plan contratado -->
-        <div class="lg:col-span-2">
-            <!-- Plan Contratado Section -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20">
-                <div class="px-8 py-6 border-b border-gray-100">
-                    <h2 class="text-2xl font-bold text-gray-900">Plan Contratado</h2>
-                    <p class="text-gray-600 mt-1">Detalles de tu suscripción actual</p>
+        <!-- ======================================== -->
+        <!-- SECCIÓN NUEVA PARA MOSTRAR EMPRESAS -->
+        <!-- ======================================== -->
+        <div class="mt-12">
+            <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-white/30 overflow-hidden hover:shadow-3xl transition-all duration-300">
+                <!-- Header -->
+                <div class="px-8 py-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <svg class="w-7 h-7 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        Mis Empresas
+                    </h2>
+                    <p class="text-indigo-100 mt-1">Gestiona la información de tus empresas</p>
                 </div>
-                
+
                 <div class="p-8">
-                    <div class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 rounded-2xl border border-indigo-200/50" id="plan-contratado-container">
-                        <div class="text-center py-12">
-                            <div class="relative">
-                                <div class="w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl mx-auto flex items-center justify-center animate-pulse">
-                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+                    @if($empresas->count() > 0)
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            @foreach($empresas as $empresa)
+                                <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                                    <div class="p-6">
+                                        <div class="flex items-center space-x-4 mb-4">
+                                            @if($empresa->logo)
+                                                <div class="w-16 h-16 bg-white rounded-xl p-2 shadow-lg">
+                                                    <img src="{{ Storage::url($empresa->logo) }}" alt="Logo de {{ $empresa->nombre_empresa }}" class="w-full h-full object-contain">
+                                                </div>
+                                            @else
+                                                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
+                                                    {{ substr($empresa->nombre_empresa, 0, 1) }}
+                                                </div>
+                                            @endif
+                                            <div class="flex-1">
+                                                <h3 class="text-lg font-bold text-gray-900">{{ $empresa->nombre_empresa }}</h3>
+                                                <p class="text-sm text-gray-600">{{ $empresa->tipo_empresa }}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        @if($empresa->descripcion)
+                                            <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $empresa->descripcion }}</p>
+                                        @else
+                                            <p class="text-gray-400 text-sm mb-4 italic">Sin descripción</p>
+                                        @endif
+                                        
+
+                                    </div>
+                                    <div class="px-6 py-3 bg-gray-50 border-t border-gray-100">
+                                        <a href="{{ route('empresas.show', $empresa->id) }}" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm flex items-center">
+                                            Ver detalles
+                                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        
+                        <div class="mt-8 flex justify-center">
+                            <a href="{{ route('empresas.create') }}" class="group relative overflow-hidden inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                <div class="absolute inset-0 bg-white/20 translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                                <div class="relative flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Agregar nueva empresa
+                                </div>
+                            </a>
+                        </div>
+                    @else
+                        <div class="text-center py-16">
+                            <div class="relative inline-block">
+                                <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl mx-auto flex items-center justify-center mb-6 shadow-lg">
+                                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                     </svg>
                                 </div>
+                                <div class="absolute inset-0 rounded-3xl bg-gray-300 opacity-10 animate-pulse"></div>
                             </div>
-                            <p class="text-gray-600 mt-4 font-medium">Cargando información del plan...</p>
-                            <p class="text-sm text-gray-500 mt-1">Esto tomará unos segundos</p>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Aún no tienes empresas registradas</h3>
+                            <p class="text-gray-600 mb-8 max-w-md mx-auto">Registra tu primera empresa para que podamos empezar a trabajar contigo.</p>
+                            <a href="{{ route('empresas.create') }}" class="group relative overflow-hidden inline-flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                <div class="absolute inset-0 bg-white/20 translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                                <div class="relative flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Crear mi primera empresa
+                                </div>
+                            </a>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -112,17 +217,22 @@
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <!-- Fondo del modal con blur -->
         <div class="fixed inset-0 transition-opacity backdrop-blur-sm" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-900/50"></div>
+            <div class="absolute inset-0 bg-gray-900/60"></div>
         </div>
         
         <!-- Contenido del modal -->
-        <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-200">
+        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-200">
             
             <!-- Header del modal -->
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-5">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold text-white" id="modal-plan-title">Detalles del Plan</h3>
-                    <button type="button" id="close-modal" class="text-white/80 hover:text-white transition-colors duration-200">
+                    <h3 class="text-xl font-bold text-white flex items-center" id="modal-plan-title">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        Detalles del Plan
+                    </h3>
+                    <button type="button" id="close-modal" class="text-white/80 hover:text-white transition-colors duration-200 p-1 rounded-full hover:bg-white/20">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -134,7 +244,7 @@
             <div class="bg-white px-6 py-6">
                 
                 <!-- Información del ciclo -->
-                <div class="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div class="mb-6 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200/50">
                     <h4 class="font-bold text-gray-800 mb-2 flex items-center">
                         <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -339,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (plan.todas_caracteristicas && plan.todas_caracteristicas.length > 0) {
             plan.todas_caracteristicas.forEach(caracteristica => {
                 const div = document.createElement('div');
-                div.className = 'flex items-center p-3 bg-gray-50 rounded-xl border border-gray-200';
+                div.className = 'flex items-center p-3 bg-gradient-to-r from-gray-50 to-indigo-50 rounded-xl border border-gray-200 hover:shadow-md transition-shadow duration-200';
                 
                 const starIcon = caracteristica.es_destacado ? 
                     '<svg class="w-5 h-5 text-amber-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118l-2.8-2.034c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>' : 

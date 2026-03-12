@@ -15,8 +15,10 @@
         <!-- Menú de navegación -->
         <div class="sidebar-menu">
             <div class="menu-label">MENU</div>
+            
+            <!-- DASHBOARD -->
             <div class="menu-item">
-                <a href="#" class="menu-link" onclick="toggleSubmenu(this)">
+                <a href="{{ route('clientes.dashboard') }}" class="menu-link">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"/>
                         <rect x="14" y="3" width="7" height="7"/>
@@ -24,24 +26,50 @@
                         <rect x="3" y="14" width="7" height="7"/>
                     </svg>
                     <span class="menu-text">Dashboard</span>
+                </a>
+            </div>
+
+            <!-- PAGOS -->
+            <div class="menu-item">
+                <a href="#" class="menu-link" onclick="toggleSubmenu(this)">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    <span class="menu-text">Pagos</span>
                     <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="9 18 15 12 9 6"/>
                     </svg>
                 </a>
                 <div class="submenu">
                     <div class="submenu-item">
-                        <a href="{{ route('clientes.dashboard') }}"class="submenu-link">Inicio</a>
+                        <a href="{{ route('clientes.historial.pagos') }}" class="submenu-link">Historial de pagos</a>
                     </div>
-                    <div class="submenu-item">
-                        <a href="{{ route('clientes.micuenta') }}"class="submenu-link">Mi Cuenta</a>
-                    </div>
-                   
-                    
                 </div>
             </div>
 
-           
+            <!-- CAMPAÑAS -->
+            <div class="menu-item">
+                <a href="#" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span class="menu-text">Campañas</span>
+                </a>
+            </div>
 
+            <!-- RECURSOS -->
+            <div class="menu-item">
+                <a href="#" class="menu-link">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span class="menu-text">Recursos</span>
+                </a>
+            </div>
+
+            <!-- ANALÍTICAS -->
             <div class="menu-item">
                 <a href="{{ route('clientes.analiticas') }}" class="menu-link">
                     <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -89,7 +117,7 @@
                     
                     <div class="dropdown-divider"></div>
                     
-                    <a href="#" class="dropdown-item">
+                    <a href="{{ route('clientes.micuenta') }}" class="dropdown-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                             <circle cx="12" cy="7" r="4"/>
@@ -123,9 +151,6 @@
         </div>
     </div>
 
-
-
-
     <!-- Popup de confirmación para cerrar sesión -->
     <div class="confirmation-popup" id="logoutConfirmationPopup">
         <div class="confirmation-box">
@@ -139,7 +164,5 @@
             </div>
         </div>
     </div>
-
-   
 </body>
 </html>

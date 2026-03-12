@@ -21,44 +21,62 @@ class AuthController extends Controller
     }
 
     // Procesar login
-   // Procesar login
-public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
-        
-        $user = Auth::user();
-        
-        // Cargar la relación de roles (alternativa segura)
-        $userWithRoles = User::with('roles')->find($user->id);
-        
-        // Verificar si es administrador
-        if ($userWithRoles->roles->where('nombre_rol', 'Administrador')->isNotEmpty()) {
-            return redirect()->route('administrador.dashboard');
-        }
-        
-        // Verificar suscripción activa
-        $tieneSuscripcionActiva = Suscripcion::where('usuario_id', $user->id)
-            ->where('estado', 'activa')
-            ->where('fecha_fin', '>', now())
-            ->exists();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
             
-        if ($tieneSuscripcionActiva) {
-            return redirect()->route('clientes.dashboard');
-        }
-        
-        return redirect()->route('clientes.home');
-    }
+            $user = Auth::user();
 
-    return back()->withErrors([
-        'email' => 'Las credenciales no coinciden con nuestros registros.',
-    ])->onlyInput('email');
-}
+            // Guardar Security Log: Login Exitoso
+            \App\Models\SecurityLog::create([
+                'user_id' => $user->id,
+                'event_type' => 'login_success',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'details' => ['method' => 'manual_login', 'email' => $request->email]
+            ]);
+
+            // Cargar la relación de roles (alternativa segura)
+            $userWithRoles = User::with('roles')->find($user->id);
+            
+            // Verificar si es administrador
+            if ($userWithRoles->roles->where('nombre_rol', 'Administrador')->isNotEmpty()) {
+                return redirect()->route('administrador.dashboard');
+            }
+            
+            // Verificar suscripción activa
+            $tieneSuscripcionActiva = Suscripcion::where('usuario_id', $user->id)
+                ->where('estado', 'activa')
+                ->where('fecha_fin', '>', now())
+                ->exists();
+                
+            if ($tieneSuscripcionActiva) {
+                return redirect()->route('clientes.dashboard');
+            }
+            
+            return redirect()->route('clientes.home');
+        }
+
+        // Guardar Security Log: Login Fallido
+        $failedUser = User::where('email', $request->email)->first();
+        \App\Models\SecurityLog::create([
+            'user_id' => $failedUser ? $failedUser->id : null,
+            'event_type' => 'login_failed',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'details' => ['method' => 'manual_login', 'email' => $request->email]
+        ]);
+
+        return back()->withErrors([
+            'email' => 'Las credenciales no coinciden con nuestros registros.',
+        ])->onlyInput('email');
+    }
     // Procesar registro
 public function register(Request $request)
 {

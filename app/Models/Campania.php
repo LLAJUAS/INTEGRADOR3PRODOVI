@@ -45,4 +45,8 @@ class Campania extends Model
     {
         return $this->hasMany(Tarea::class);
     }
+    public function empresas()
+    {
+        return $this->hasMany(Empresa::class, 'usuario_id');
+    }
 }

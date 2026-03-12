@@ -118,7 +118,7 @@
                         </h3>
                     </div>
                     <div class="p-4">
-                        <div class="flex items-center space-x-3">
+                        <div class="flex items-center space-x-3 mb-4">
                             <div class="w-10 h-10 bg-gradient-to-r from-green-400 to-teal-500 rounded-full flex items-center justify-center">
                                 <span class="text-white font-semibold text-sm">{{ substr($campania->cliente->name, 0, 2) }}</span>
                             </div>
@@ -126,6 +126,38 @@
                                 <p class="font-semibold text-gray-900">{{ $campania->cliente->name }}</p>
                                 <p class="text-sm text-gray-600">{{ $campania->cliente->email }}</p>
                             </div>
+                        </div>
+
+                        <!-- Lógica de Empresa -->
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            @php
+                                $empresa = $campania->cliente->empresas->first();
+                            @endphp
+                            
+                            @if($empresa)
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-sm">
+                                        <svg class="w-4 h-4 text-emerald-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                        </svg>
+                                        <span class="text-gray-700 font-medium">Empresa Registrada</span>
+                                    </div>
+                                    <a href="{{ route('administrador.empresas.show', $empresa->id) }}" 
+                                       class="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-600 text-xs font-semibold rounded-lg hover:bg-emerald-100 transition-colors">
+                                        Ver Empresa
+                                        <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            @else
+                                <div class="flex items-center text-sm text-amber-600 bg-amber-50 p-2.5 rounded-lg border border-amber-100">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                    <span>Cliente sin empresa registrada</span>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

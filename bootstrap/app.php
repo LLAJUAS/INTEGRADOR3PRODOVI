@@ -11,7 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Registrar LogAccessMiddleware globalmente para medir todas las peticiones
+        $middleware->append(\App\Http\Middleware\LogAccessMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

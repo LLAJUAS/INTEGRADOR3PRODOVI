@@ -27,24 +27,27 @@ class Plan extends Model
         'activo' => 'boolean',
     ];
 
-    // Relación con las características a través de la tabla intermedia
+    /**
+     * Obtiene las características del plan.
+     * Relación Muchos a Muchos con tabla pivote personalizada.
+     */
+    public function caracteristicas()
+    {
+        return $this->belongsToMany(Caracteristica::class, 'plan_caracteristica', 'plan_id', 'caracteristica_id')
+            ->withPivot('cantidad', 'frecuencia', 'orden', 'es_destacado') // Carga los datos extra de la tabla pivote
+            ->orderBy('pivot_orden'); // Ordena por la columna 'orden' de la tabla pivote
+    }
+
+    // Relación con la tabla pivote (útil si necesitas acceder a ella directamente)
     public function planCaracteristicas()
     {
         return $this->hasMany(PlanCaracteristica::class, 'plan_id')
                     ->orderBy('orden');
     }
 
-    // Accesor para obtener las características relacionadas
-    public function getCaracteristicasAttribute()
+    // Relación con las suscripciones
+    public function suscripciones()
     {
-        return $this->planCaracteristicas->map(function ($pc) {
-            return [
-                'caracteristica' => $pc->caracteristica,
-                'cantidad' => $pc->cantidad,
-                'frecuencia' => $pc->frecuencia,
-                'orden' => $pc->orden,
-                'es_destacado' => $pc->es_destacado
-            ];
-        });
+        return $this->hasMany(Suscripcion::class, 'plan_id');
     }
 }
