@@ -17,6 +17,10 @@
     @include('componentes.footer')
 
 
+    <!-- GSAP for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+
     <script src="{{ asset('js/welcome.js') }}"></script>
     @include('a.css.hero.container1')
     @include('a.js.hero.welcome')

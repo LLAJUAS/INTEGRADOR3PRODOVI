@@ -137,8 +137,18 @@
         </div>
     </div>
 
-    <!-- Tasa de Conversión -->
-    <div class="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100">
+    <!-- CTR Click Through Rate -->
+    <div onclick="exportCTRReport(event)" class="relative group bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-5 shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 cursor-pointer overflow-hidden">
+        <!-- Overlay de hover -->
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center z-20">
+            <div class="bg-white px-4 py-2 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                <span class="text-sm font-semibold text-green-700">Descargar Reporte</span>
+            </div>
+        </div>
+
         <div class="flex justify-between items-start">
             <div>
                 <p class="text-sm font-medium text-gray-500 mb-1">CTR (Click Through Rate)</p>
@@ -401,6 +411,47 @@
         .catch(error => {
             console.error('Error al exportar reporte de seguidores:', error);
             alert('Ocurrió un error al generar el informe de seguidores. Por favor, inténtalo de nuevo.');
+        });
+    }
+
+    function exportCTRReport(event) {
+        event.preventDefault();
+        
+        const timeRangeSelect = document.getElementById('timeRange');
+        let viewName = '30dias';
+        
+        if (timeRangeSelect) {
+            switch(timeRangeSelect.value) {
+                case '7': viewName = '7dias'; break;
+                case '30': viewName = '30dias'; break;
+                case '365': viewName = 'anual'; break;
+            }
+        }
+        
+        // Mostrar feedback de carga si fuera necesario, similar a los otros reportes
+        fetch(`/clientes/analiticas/reporte-ctr?view=${viewName}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/pdf',
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Error al generar el informe de CTR');
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reporte_ctr_plataforma.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error al exportar reporte de CTR:', error);
+            alert('Ocurrió un error al generar el informe de CTR. Por favor, inténtalo de nuevo.');
         });
     }
 </script>

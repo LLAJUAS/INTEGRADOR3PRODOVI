@@ -165,6 +165,69 @@
             transform: translateY(-10px);
         }
 
+        .scroll-down-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(164, 23, 225, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pulse-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #a417e1;
+            border-radius: 50%;
+            animation: ringPulse 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ringPulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .scroll-down-btn:hover {
+            color: #a417e1;
+            transform: translateX(-50%) translateY(5px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #a417e1;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
 /* RESPONSIVE STYLES */
 
 /* Tablets y pantallas medianas */

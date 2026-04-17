@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Campania;
 use App\Models\User;
 use App\Models\Pago;
+use App\Models\PlanMarketing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -182,5 +183,72 @@ class CampañasController extends Controller
 
         return redirect()->route('administrador.campañas.index')
             ->with('success', 'Campaña actualizada exitosamente');
+    }
+
+    public function obtenerPlanIA($usuario_id)
+    {
+        try {
+            $user = User::with('empresas')->findOrFail($usuario_id);
+            $empresa = $user->empresas->first();
+
+            if (!$empresa) {
+                return response()->json(['error' => 'El cliente no tiene una empresa registrada.'], 404);
+            }
+
+            $plan = PlanMarketing::where('empresa_id', $empresa->id)
+                ->latest()
+                ->first();
+
+            if (!$plan) {
+                return response()->json(['error' => 'No se encontró un plan de marketing para este cliente.'], 404);
+            }
+
+            $contenido = $plan->contenido;
+            
+            // Extraer Objetivos SMART (Sección 3)
+            $objetivos = '';
+            if (preg_match('/##\s+3\s+Objetivos SMART(.*?)(?=##|$)/si', $contenido, $matches)) {
+                $objetivos = trim($matches[1]);
+            }
+
+            // Extraer Conclusiones (Sección 7) para la "mini descripción"
+            $miniDescripcion = '';
+            if (preg_match('/##\s+7[#\s]+Conclusiones(.*?)(?=##|$)/si', $contenido, $matches)) {
+                $miniDescripcion = trim($matches[1]);
+            }
+
+            // Limpiar Markdown y separadores
+            $descripcion = "";
+            if (!empty($miniDescripcion)) {
+                $descripcion .= $miniDescripcion . "\n\n";
+            }
+            
+            $descripcion .= "OBJETIVOS:\n" . $objetivos;
+            
+            // Eliminar líneas de separación y etiquetas HTML residuales
+            $descripcion = str_replace('---', '', $descripcion);
+            $descripcion = strip_tags($descripcion);
+            $descripcion = trim($descripcion);
+            
+            return response()->json([
+                'nombre' => 'Campaña Estratégica: ' . $empresa->nombre_empresa,
+                'descripcion' => mb_substr($descripcion, 0, 2500)
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al procesar el plan: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function destroy(Campania $campania)
+    {
+        try {
+            $campania->delete();
+            return redirect()->route('administrador.campañas.index')
+                ->with('success', 'Campaña eliminada exitosamente. El cliente ahora puede tener una nueva campaña.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error al eliminar la campaña: ' . $e->getMessage());
+        }
     }
 }

@@ -63,12 +63,23 @@ class ClienteController extends Controller
         // NUEVO: Obtener las empresas del usuario
         $empresas = $user->empresas;
 
+        // CARGAR DATOS DE ANALITICAS PARA EL DASHBOARD (Últimos 7 días)
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $data = $allData['last7days'] ?? [];
+        } else {
+            $data = [];
+        }
+
         return view('clientes.dashboard', compact(
             'user',
             'suscripcionActiva',
             'diasRestantes',
             'porcentajeRestante',
-            'empresas' // Pasamos la colección de empresas a la vista
+            'empresas',
+            'data' // Pasamos los datos de analíticas a la vista
         ));
     }
 

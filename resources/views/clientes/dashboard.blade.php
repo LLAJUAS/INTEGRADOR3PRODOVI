@@ -11,7 +11,7 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50" id="dashboard-content">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        <!-- Header Section -->
+        <!-- Header Section 
         <div class="relative overflow-hidden bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-500 rounded-2xl shadow-xl">
             <div class="absolute inset-0 bg-black/10"></div>
             <div class="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         
         <!-- Resto del contenido del dashboard... -->
         <!-- (Aquí va todo el contenido original que ya tenías) -->
@@ -72,16 +72,16 @@
                                     </svg>
                                 </div>
                                 <div class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">
-                                    +2
+                                    +{{ count($data['top_publications'] ?? []) }}
                                 </div>
                             </div>
                             <h3 class="text-sm font-medium text-gray-600 mb-1">Publicaciones esta semana</h3>
-                            <p class="text-3xl font-bold text-gray-900 mb-2">4</p>
+                            <p class="text-3xl font-bold text-gray-900 mb-2">{{ (count($data['growth_publications'] ?? []) + count($data['top_publications'] ?? [])) ?: 0 }}</p>
                             <div class="flex items-center text-sm">
                                 <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-gray-500 ml-1">publicaciones esta semana</span>
+                                <span class="text-gray-500 ml-1">nuevas publicaciones</span>
                             </div>
                         </div>
                     </div>
@@ -97,17 +97,19 @@
                                     </svg>
                                 </div>
                                 <div class="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">
-                                    +15%
+                                    {{ $data['engagement']['vs_previous'] ?? '+0%' }}
                                 </div>
                             </div>
                             <h3 class="text-sm font-medium text-gray-600 mb-1">Total de interacciones</h3>
-                            <p class="text-3xl font-bold text-gray-900 mb-2">1,248</p>
+                            <p class="text-3xl font-bold text-gray-900 mb-2">
+                                {{ number_format(array_sum($data['interactions_breakdown'] ?? [])) }}
+                            </p>
                             <div class="flex items-center text-sm">
                                 <svg class="w-4 h-4 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-green-600 font-medium">15%</span>
-                                <span class="text-gray-500 ml-1">desde la semana pasada</span>
+                                <span class="text-green-600 font-medium">{{ $data['engagement']['vs_previous'] ?? '0%' }}</span>
+                                <span class="text-gray-500 ml-1">vs {{ $data['period_label'] ?? 'anterior' }}</span>
                             </div>
                         </div>
                     </div>
@@ -126,23 +128,27 @@
                                     <span class="font-semibold">Facebook</span>
                                 </div>
                                 <div class="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded-full">
-                                    +45
+                                    +{{ $data['followers']['facebook_count'] ?? 0 }}
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="text-2xl font-bold">320</span>
+                                    <span class="text-2xl font-bold">{{ collect($data['followers']['growth_facebook'] ?? [])->last() ?? 0 }}</span>
                                     <span class="text-sm opacity-80">seguidores</span>
                                 </div>
                                 <div class="w-full bg-white/20 rounded-full h-2">
-                                    <div class="bg-white h-2 rounded-full transition-all duration-500 ease-out" style="width: 65%"></div>
+                                    @php
+                                        $fbTotal = collect($data['followers']['growth_facebook'] ?? [])->last() ?? 0;
+                                        $fbPercent = ($fbTotal / 500) * 100;
+                                    @endphp
+                                    <div class="bg-white h-2 rounded-full transition-all duration-500 ease-out" style="width: {{ $fbPercent }}%"></div>
                                 </div>
                             </div>
                             <p class="text-sm opacity-80">Meta mensual: 500 seguidores</p>
                         </div>
                     </div>
 
-                    <!-- Instagram Card -->
+                    <!-- Instagram Cardddddddddddd-->
                     <div class="group relative overflow-hidden bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl p-6 text-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-8 translate-x-8"></div>
                         <div class="relative">
@@ -156,16 +162,20 @@
                                     <span class="font-semibold">Instagram</span>
                                 </div>
                                 <div class="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded-full">
-                                    +28
+                                    +{{ $data['followers']['instagram_count'] ?? 0 }}
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <div class="flex justify-between items-center mb-2">
-                                    <span class="text-2xl font-bold">215</span>
+                                    <span class="text-2xl font-bold">{{ collect($data['followers']['growth_instagram'] ?? [])->last() ?? 0 }}</span>
                                     <span class="text-sm opacity-80">seguidores</span>
                                 </div>
                                 <div class="w-full bg-white/20 rounded-full h-2">
-                                    <div class="bg-white h-2 rounded-full transition-all duration-500 ease-out" style="width: 45%"></div>
+                                    @php
+                                        $igTotal = collect($data['followers']['growth_instagram'] ?? [])->last() ?? 0;
+                                        $igPercent = ($igTotal / 400) * 100;
+                                    @endphp
+                                    <div class="bg-white h-2 rounded-full transition-all duration-500 ease-out" style="width: {{ $igPercent }}%"></div>
                                 </div>
                             </div>
                             <p class="text-sm opacity-80">Meta mensual: 400 seguidores</p>

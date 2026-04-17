@@ -51,6 +51,8 @@ Route::middleware('auth')->group(function () {
         ->name('clientes.analiticas.reporte-alcance');
     Route::get('/clientes/analiticas/reporte-seguidores', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'exportarReporteSeguidores'])
         ->name('clientes.analiticas.reporte-seguidores');
+    Route::get('/clientes/analiticas/reporte-ctr', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'exportarReporteCTR'])
+        ->name('clientes.analiticas.reporte-ctr');
     Route::get('/clientes/analiticas/load-view', [App\Http\Controllers\Cliente\ClienteAnaliticasController::class, 'loadView'])
         ->name('clientes.analiticas.load-view');
     
@@ -137,8 +139,12 @@ Route::prefix('administrador')->middleware('auth')->group(function () {
             ->name('administrador.campañas.update');
         Route::patch('/{campania}/activar', [\App\Http\Controllers\Admin\CampañasController::class, 'activar'])
             ->name('administrador.campañas.activar');
+        Route::delete('/{campania}', [\App\Http\Controllers\Admin\CampañasController::class, 'destroy'])
+            ->name('administrador.campañas.destroy');
         Route::get('/{campania}/calendario', [\App\Http\Controllers\Admin\TareaController::class, 'calendario'])
             ->name('administrador.campañas.calendario');
+        Route::get('/obtener-plan-ia/{usuario_id}', [\App\Http\Controllers\Admin\CampañasController::class, 'obtenerPlanIA'])
+            ->name('administrador.campañas.plan-ia');
         
         // Rutas para tareas
         Route::prefix('/{campania}/tareas')->group(function () {

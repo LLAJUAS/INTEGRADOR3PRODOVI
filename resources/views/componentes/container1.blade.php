@@ -41,9 +41,15 @@
                 </div>
             </div>
         </div>
+        <a href="#services" class="scroll-down-btn">
+            <div class="pulse-ring"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+        </a>
     </div>
 
-<div class="container2 animate-container slide-right">
+<div class="container2 animate-container slide-right" id="services">
     <div class="section-header">
         <div class="section-badge">NUESTROS SERVICIOS</div>
         <h2 class="section-title">Estrategias Digitales que Impulsan tu Negocio</h2>

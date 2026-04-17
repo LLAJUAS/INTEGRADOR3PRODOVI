@@ -90,7 +90,6 @@ class PlanMarketingController extends Controller
             ];
         })->toArray();
 
-        // Generar el contenido del plan usando el nuevo servicio
         $contenidoPlan = $this->marketingPlanService->generateMarketingPlan(
             $empresa->nombre_empresa,
             $empresa->resumen_ejecutivo,
@@ -101,7 +100,6 @@ class PlanMarketingController extends Controller
             return back()->with('error', 'No se pudo generar el contenido del plan de marketing. Inténtelo de nuevo.');
         }
 
-        // Crear y guardar el plan de marketing
         $planMarketing = PlanMarketing::create([
             'empresa_id' => $empresa->id,
             'suscripcion_id' => $suscripcion->id,

@@ -42,7 +42,7 @@ class ClienteAnaliticasController extends Controller
             $allData = json_decode($jsonString, true);
             $data = $allData[$periodKey] ?? [];
         } else {
-            $data = []; // Fallback por si no existe
+            $data = []; 
         }
         
         return view("clientes.analiticas.partials.analiticas", compact('data'));
@@ -52,11 +52,11 @@ class ClienteAnaliticasController extends Controller
     {
         $periodo = $request->input('periodo', '30dias');
 
-        // Mapeo del parámetro select a las llaves del JSON
+       
         $periodMap = [
             '7dias' => 'last7days',
             '30dias' => 'last30days',
-            'anual' => 'thisyear' // asumiendo en caso que se quiera el general anual
+            'anual' => 'thisyear' 
         ];
         
         $periodKey = $periodMap[$periodo] ?? 'last30days';
@@ -187,7 +187,41 @@ class ClienteAnaliticasController extends Controller
         $pdf->setPaper('A4', 'portrait');
         $pdf->setOption('isHtml5ParserEnabled', true);
         $pdf->setOption('isRemoteEnabled', true);
-
+        
         return $pdf->download("informe_seguidores_{$view}.pdf");
+    }
+    
+    public function exportarReporteCTR(Request $request)
+    {
+        $view = $request->input('view', 'last30days');
+        
+        $periodMap = [
+            '7dias' => 'last7days',
+            '30dias' => 'last30days',
+            'anual' => 'thisyear'
+        ];
+        
+        $periodKey = $periodMap[$view] ?? 'last30days';
+        
+        $jsonPath = resource_path('data/analiticas.json');
+        if (file_exists($jsonPath)) {
+            $jsonString = file_get_contents($jsonPath);
+            $allData = json_decode($jsonString, true);
+            $data = $allData[$periodKey] ?? [];
+        } else {
+            $data = [];
+        }
+        
+        $pdfData = [
+            'fecha_generacion' => now()->format('d/m/Y H:i'),
+            'data' => $data
+        ];
+
+        $pdf = Pdf::loadView('pdf.reporte_ctr', $pdfData);
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isRemoteEnabled', true);
+
+        return $pdf->download("reporte_ctr_plataforma.pdf");
     }
 }

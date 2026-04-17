@@ -81,13 +81,23 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $cliente['fecha_fin_suscripcion'] }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <button onclick="mostrarFormulario('{{ $cliente['id'] }}')" 
-                                                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
-                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                            </svg>
-                                            Crear Campaña
-                                        </button>
+                                        <div class="flex items-center space-x-2">
+                                            <button onclick="llenarConIA('{{ $cliente['id'] }}', this)" 
+                                                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-purple-600 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
+                                                CREAR CON IA
+                                            </button>
+
+                                            <button onclick="mostrarFormulario('{{ $cliente['id'] }}')" 
+                                                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                                </svg>
+                                                Crear Campaña
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 
@@ -210,7 +220,7 @@
                     <p class="text-gray-500 text-lg">No hay campañas activas en este momento</p>
                 </div>
             @else
-                <div class="overflow-hidden rounded-xl border border-gray-200">
+                <div class="overflow-x-auto rounded-xl border border-gray-200">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
@@ -260,12 +270,26 @@
                                                 </svg>
                                                 Ver
                                             </a>
-                                                   <!-- Botón Editar Campaña -->
-                                        <a href="{{ route('administrador.campañas.edit', $campania->id) }}" 
-                                           class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-sm">
-                                            Editar
-                                        </a>
+                                            <!-- Botón Editar Campaña -->
+                                            <a href="{{ route('administrador.campañas.edit', $campania->id) }}" 
+                                               class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-white text-xs font-medium rounded-lg hover:bg-yellow-600 transition-colors">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                </svg>
+                                                Editar
+                                            </a>
 
+                                            <!-- Botón Eliminar Campaña -->
+                                            <form action="{{ route('administrador.campañas.destroy', $campania->id) }}" method="POST" onsubmit="return confirm('¿Está seguro de que desea eliminar esta campaña? El cliente volverá a aparecer en la lista de clientes sin campaña.')" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-xs font-medium rounded-lg hover:bg-red-600 transition-colors">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                    </svg>
+                                                    Eliminar
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -398,6 +422,60 @@
         if (firstInput) {
             setTimeout(() => firstInput.focus(), 300);
         }
+    }
+
+    // Función para crear campaña con IA
+    function llenarConIA(clienteId, btn) {
+        const originalContent = btn.innerHTML;
+        btn.disabled = true;
+        btn.classList.add('opacity-75', 'cursor-not-allowed');
+        btn.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Obteniendo Plan...
+        `;
+
+        fetch(`/administrador/campañas/obtener-plan-ia/${clienteId}`)
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.error || 'Error al obtener el plan'); });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Llenar campos
+                const formElement = document.getElementById('crear-campania-form-' + clienteId);
+                if (formElement) {
+                    formElement.querySelector('input[name="nombre"]').value = data.nombre;
+                    formElement.querySelector('textarea[name="descripcion"]').value = data.descripcion;
+
+                    // Mostrar el contenedor del formulario
+                    mostrarFormulario(clienteId);
+
+                    // Pequeña pausa para asegurar que el formulario está visible antes del scroll
+                    setTimeout(() => {
+                        const formRow = document.getElementById('form-' + clienteId);
+                        formRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Resaltar el campo de CM
+                        const cmSelect = formElement.querySelector('select[name="community_manager_id"]');
+                        cmSelect.focus();
+                        cmSelect.classList.add('ring-4', 'ring-purple-200');
+                        setTimeout(() => cmSelect.classList.remove('ring-4', 'ring-purple-200'), 3000);
+                    }, 400);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message || 'Hubo un error al procesar la solicitud');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                btn.innerHTML = originalContent;
+            });
     }
     
     // Función para ocultar formulario con animación suave
